@@ -1,7 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
 Learn You a Haskell for Great Good!
 ===================================
 
@@ -135,7 +131,3 @@ This work is licensed under a [Creative Commons
 Attribution-Noncommercial-Share Alike 3.0 Unported
 License](http://creativecommons.org/licenses/by-nc-sa/3.0/) because I
 couldn't find a license with an even longer name.
-
-</div>
-
-</div>
