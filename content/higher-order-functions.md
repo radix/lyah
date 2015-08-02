@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Recursion](recursion)
--   [Table of contents](chapters)
--   [Modules](modules)
-
-</div>
-
 Higher order functions {style="margin-left:-3px"}
 ======================
 
@@ -421,7 +409,7 @@ predicate. The type signature and implementation go like this:
 ``` {.haskell:hs name="code"}
 filter :: (a -> Bool) -> [a] -> [a]
 filter _ [] = []
-filter p (x:xs) 
+filter p (x:xs)
     | p x       = x : filter p xs
     | otherwise = filter p xs
 ```
@@ -464,9 +452,9 @@ class="fixed">filter</span>:
 ``` {.haskell:ghci name="code"}
 quicksort :: (Ord a) => [a] -> [a]  
 quicksort [] = []  
-quicksort (x:xs) =   
+quicksort (x:xs) =
     let smallerSorted = quicksort (filter (<=x) xs)
-        biggerSorted = quicksort (filter (>x) xs) 
+        biggerSorted = quicksort (filter (>x) xs)
     in  smallerSorted ++ [x] ++ biggerSorted
 ```
 
@@ -1188,8 +1176,8 @@ so-called point free style (also called the point*less* style). Take for
 example this function that we wrote earlier:
 
 ``` {.haskell:hs name="code"}
-sum' :: (Num a) => [a] -> a   
-sum' xs = foldl (+) 0 xs   
+sum' :: (Num a) => [a] -> a
+sum' xs = foldl (+) 0 xs
 ```
 
 The <span class="fixed">xs</span> is exposed on both right sides.
@@ -1232,7 +1220,7 @@ solution looks like when put into a function.
 
 ``` {.haskell:hs name="code"}
 oddSquareSum :: Integer
-oddSquareSum = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))   
+oddSquareSum = sum (takeWhile (<10000) (filter odd (map (^2) [1..])))
 ```
 
 Being such a fan of function composition, I would have probably written
@@ -1248,7 +1236,7 @@ would have written it like this:
 
 ``` {.haskell:hs name="code"}
 oddSquareSum :: Integer
-oddSquareSum = 
+oddSquareSum =
     let oddSquares = filter odd $ map (^2) [1..]
         belowLimit = takeWhile (<10000) oddSquares
     in  sum belowLimit
@@ -1256,15 +1244,3 @@ oddSquareSum =
 
 It wouldn't win any code golf competition, but someone reading the
 function will probably find it easier to read than a composition chain.
-
-<div class="footdiv">
-
--   [Recursion](recursion)
--   [Table of contents](chapters)
--   [Modules](modules)
-
-</div>
-
-</div>
-
-</div>

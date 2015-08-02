@@ -1,14 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   -   [Table of contents](chapters)
--   [Starting Out](starting-out)
-
-</div>
-
 Introduction
 ============
 
@@ -161,14 +150,3 @@ me when playing around in stuff is defining some functions in a .hs
 file, loading it up and messing around with them and then changing the
 .hs file, loading it up again and so on. This is also what we'll be
 doing here.
-
-<div class="footdiv">
-
--   -   [Table of contents](chapters)
--   [Starting Out](starting-out)
-
-</div>
-
-</div>
-
-</div>

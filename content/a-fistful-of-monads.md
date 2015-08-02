@@ -1,16 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Functors, Applicative Functors and
-    Monoids](functors-applicative-functors-and-monoids)
--   [Table of contents](chapters)
--   [For a Few Monads More](for-a-few-monads-more)
-
-</div>
-
 A Fistful of Monads
 ===================
 
@@ -808,7 +795,7 @@ like we did. Here's how a series of bird landings would look like:
 routine :: Maybe Pole
 routine = case landLeft 1 (0,0) of
     Nothing -> Nothing
-    Just pole1 -> case landRight 4 pole1 of 
+    Just pole1 -> case landRight 4 pole1 of
         Nothing -> Nothing
         Just pole2 -> case landLeft 2 pole2 of
             Nothing -> Nothing
@@ -977,7 +964,7 @@ notation, we get:
 
 ``` {.haskell:hs name="code"}
 marySue :: Maybe Bool
-marySue = do 
+marySue = do
     x <- Just 9
     Just (x > 8)
 ```
@@ -1039,8 +1026,8 @@ we hadn't used the monadic aspects of <span class="fixed">Maybe</span>:
 
 ``` {.haskell:hs name="code"}
 routine :: Maybe Pole
-routine = 
-    case Just (0,0) of 
+routine =
+    case Just (0,0) of
         Nothing -> Nothing
         Just start -> case landLeft 2 start of
             Nothing -> Nothing
@@ -1551,7 +1538,7 @@ and returns all the positions that you can reach from it in three moves:
 
 ``` {.haskell:hs name="code"}
 in3 :: KnightPos -> [KnightPos]
-in3 start = do 
+in3 start = do
     first <- moveKnight start
     second <- moveKnight first
     moveKnight second
@@ -1855,16 +1842,3 @@ In this chapter, we took a look at the basics of monads and learned how
 the <span class="fixed">Maybe</span> monad and the list monad work. In
 the next chapter, we'll take a look at a whole bunch of other cool
 monads and we'll also learn how to make our own.
-
-<div class="footdiv">
-
--   [Functors, Applicative Functors and
-    Monoids](functors-applicative-functors-and-monoids)
--   [Table of contents](chapters)
--   [For a Few Monads More](for-a-few-monads-more)
-
-</div>
-
-</div>
-
-</div>

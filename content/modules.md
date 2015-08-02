@@ -1,16 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Higher Order Functions](higher-order-functions)
--   [Table of contents](chapters)
--   [Making Our Own Types and
-    Typeclasses](making-our-own-types-and-typeclasses)
-
-</div>
-
 Modules
 =======
 
@@ -448,7 +435,7 @@ Let's use a fold to implement searching a list for a sublist.
 
 ``` {.haskell:hs name="code"}
 search :: (Eq a) => [a] -> [a] -> Bool
-search needle haystack = 
+search needle haystack =
     let nlen = length needle
     in  foldl (\acc x -> if take nlen x == needle then True else acc) False (tails haystack)
 ```
@@ -1145,7 +1132,7 @@ key, the second component the value. Here's an example of an association
 list with phone numbers:
 
 ``` {.haskell:hs name="code"}
-phoneBook = 
+phoneBook =
     [("betty","555-2938")
     ,("bonnie","452-2928")
     ,("patsy","493-2928")
@@ -1390,7 +1377,7 @@ decide what to do with them. Let's say that a girl can have several
 numbers and we have an association list set up like this.
 
 ``` {.haskell:hs name="code"}
-phoneBook = 
+phoneBook =
     [("betty","555-2938")
     ,("betty","342-2492")
     ,("bonnie","452-2928")
@@ -1828,16 +1815,3 @@ a lot of functions, try to see which functions serve some common purpose
 and then see if you can put them in their own module. You'll be able to
 just import your module the next time you're writing a program that
 requires some of the same functionality.
-
-<div class="footdiv">
-
--   [Higher Order Functions](higher-order-functions)
--   [Table of contents](chapters)
--   [Making Our Own Types and
-    Typeclasses](making-our-own-types-and-typeclasses)
-
-</div>
-
-</div>
-
-</div>

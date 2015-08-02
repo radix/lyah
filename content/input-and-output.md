@@ -1,16 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Making Our Own Types and
-    Typeclasses](making-our-own-types-and-typeclasses)
--   [Table of contents](chapters)
--   [Functionally Solving Problems](functionally-solving-problems)
-
-</div>
-
 Input and Output
 ================
 
@@ -352,7 +339,7 @@ prints out the same line with the words reversed. The program's
 execution will stop when we input a blank line. This is the program:
 
 ``` {.haskell:hs name="code"}
-main = do 
+main = do
     line <- getLine
     if null line
         then return ()
@@ -517,7 +504,7 @@ does.
 ``` {.haskell:hs name="code"}
 main = do   putStr "Hey, "
             putStr "I'm "
-            putStrLn "Andy!" 
+            putStrLn "Andy!"
 ```
 
 ``` {.plain name="code"}
@@ -624,7 +611,7 @@ due to buffering, reading of the characters won't actually happen until
 the user mashes the return key.
 
 ``` {.haskell:hs name="code"}
-main = do   
+main = do
     c <- getChar
     if c /= ' '
         then do
@@ -664,7 +651,7 @@ we could rewrite the previous piece of code with which we demonstrated
 class="fixed">when</span>:
 
 ``` {.haskell:hs name="code"}
-import Control.Monad 
+import Control.Monad
 
 main = do
     c <- getChar
@@ -784,7 +771,7 @@ can do stuff like this:
 ``` {.haskell:hs name="code"}
 import Control.Monad
 
-main = do 
+main = do
     colors <- forM [1,2,3,4] (\a -> do
         putStrLn $ "Which color do you associate with the number " ++ show a ++ "?"
         color <- getLine
@@ -886,7 +873,7 @@ primer. Let's make a text file that contains the following little haiku:
 ``` {.plain name="code"}
 I'm a lil' teapot
 What's with that airplane food, huh?
-It's so small, tasteless 
+It's so small, tasteless
 ```
 
 Yeah, the haiku sucks, what of it? If anyone knows of any good haiku
@@ -915,7 +902,7 @@ the help of the GNU *cat* program, which prints out a file that's given
 to it as an argument. Check it out, booyaka!
 
 ``` {.plain name="code"}
-$ ghc --make capslocker 
+$ ghc --make capslocker
 [1 of 1] Compiling Main             ( capslocker.hs, capslocker.o )
 Linking capslocker ...
 $ cat haiku.txt
@@ -1009,7 +996,7 @@ main = do
     putStr (shortLinesOnly contents)
 
 shortLinesOnly :: String -> String
-shortLinesOnly input = 
+shortLinesOnly input =
     let allLines = lines input
         shortLines = filter (\line -> length line < 10) allLines
         result = unlines shortLines
@@ -1071,7 +1058,7 @@ out the function's result. Let's modify our program to use that.
 main = interact shortLinesOnly
 
 shortLinesOnly :: String -> String
-shortLinesOnly input = 
+shortLinesOnly input =
     let allLines = lines input
         shortLines = filter (\line -> length line < 10) allLines
         result = unlines shortLines
@@ -1203,9 +1190,9 @@ We'll start off with a really simple program that opens a file called
 *girlfriend.txt*:
 
 ``` {.plain name="code"}
-Hey! Hey! You! You! 
-I don't like your girlfriend! 
-No way! No way! 
+Hey! Hey! You! You!
+I don't like your girlfriend!
+No way! No way!
 I think you need a new one!
 ```
 
@@ -1328,11 +1315,11 @@ simple, especially with lambdas, here's our previous example rewritten
 to use <span class="fixed">withFile</span>:
 
 ``` {.haskell:hs name="code"}
-import System.IO   
-  
-main = do   
+import System.IO
+
+main = do
     withFile "girlfriend.txt" ReadMode (\handle -> do
-        contents <- hGetContents handle   
+        contents <- hGetContents handle
         putStr contents)
 ```
 
@@ -1351,7 +1338,7 @@ own <span class="fixed">withFile</span> function:
 ``` {.haskell:hs name="code"}
 withFile' :: FilePath -> IOMode -> (Handle -> IO a) -> IO a
 withFile' path mode f = do
-    handle <- openFile path mode 
+    handle <- openFile path mode
     result <- f handle
     hClose handle
     return result
@@ -1427,11 +1414,11 @@ to turn *girlfriend.txt* into a CAPSLOCKED version and write it to
 *girlfriendcaps.txt*:
 
 ``` {.haskell:hs name="code"}
-import System.IO   
+import System.IO
 import Data.Char
-  
-main = do   
-    contents <- readFile "girlfriend.txt"   
+
+main = do
+    contents <- readFile "girlfriend.txt"
     writeFile "girlfriendcaps.txt" (map toUpper contents)
 ```
 
@@ -1454,9 +1441,9 @@ have to do. Now let's make a program that takes a line from the standard
 input and adds that to our to-do list.
 
 ``` {.haskell:hs name="code"}
-import System.IO   
-  
-main = do   
+import System.IO
+
+main = do
     todoItem <- getLine
     appendFile "todo.txt" (todoItem ++ "\n")
 ```
@@ -1484,7 +1471,7 @@ whole file to be read at once and stored in-memory. It's I/O lazy, so
 doing this:
 
 ``` {.haskell:hs name="code"}
-main = do 
+main = do
     withFile "something.txt" ReadMode (\handle -> do
         contents <- hGetContents handle
         putStr contents)
@@ -1522,7 +1509,7 @@ Here's our previous piece of code, only it doesn't read it line by line
 but reads the whole file in chunks of 2048 bytes.
 
 ``` {.haskell:hs name="code"}
-main = do 
+main = do
     withFile "something.txt" ReadMode (\handle -> do
         hSetBuffering handle $ BlockBuffering (Just 2048)
         contents <- hGetContents handle
@@ -1568,18 +1555,18 @@ import System.IO
 import System.Directory
 import Data.List
 
-main = do      
+main = do
     handle <- openFile "todo.txt" ReadMode
     (tempName, tempHandle) <- openTempFile "." "temp"
     contents <- hGetContents handle
-    let todoTasks = lines contents   
-        numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks   
+    let todoTasks = lines contents
+        numberedTasks = zipWith (\n line -> show n ++ " - " ++ line) [0..] todoTasks
     putStrLn "These are your TO-DO items:"
     putStr $ unlines numberedTasks
-    putStrLn "Which one do you want to delete?"   
-    numberString <- getLine   
-    let number = read numberString   
-        newTodoItems = delete (todoTasks !! number) todoTasks   
+    putStrLn "Which one do you want to delete?"
+    numberString <- getLine
+    let number = read numberString
+        newTodoItems = delete (todoTasks !! number) todoTasks
     hPutStr tempHandle $ unlines newTodoItems
     hClose handle
     hClose tempHandle
@@ -1738,9 +1725,9 @@ contains the program name.
 Here's a small program that demonstrates how these two work:
 
 ``` {.haskell:hs name="code"}
- import System.Environment 
+ import System.Environment
  import Data.List
- 
+
  main = do
     args <- getArgs
     progName <- getProgName
@@ -1802,7 +1789,7 @@ take the argument list as a parameter and return an I/O action that does
 the viewing, adding, deleting, etc.
 
 ``` {.haskell:hs name="code"}
-import System.Environment 
+import System.Environment
 import System.Directory
 import System.IO
 import Data.List
@@ -1930,7 +1917,7 @@ class="fixed">fileName</span>.
 Here's the whole program at once, in all its glory!
 
 ``` {.haskell:hs name="code"}
-import System.Environment 
+import System.Environment
 import System.Directory
 import System.IO
 import Data.List
@@ -1940,7 +1927,7 @@ dispatch =  [ ("add", add)
             , ("view", view)
             , ("remove", remove)
             ]
- 
+
 main = do
     (command:args) <- getArgs
     let (Just action) = lookup command dispatch
@@ -2174,7 +2161,7 @@ class="fixed">False</span> is heads.
 
 ``` {.haskell:hs name="code"}
 threeCoins :: StdGen -> (Bool, Bool, Bool)
-threeCoins gen = 
+threeCoins gen =
     let (firstCoin, newGen) = random gen
         (secondCoin, newGen') = random newGen
         (thirdCoin, newGen'') = random newGen'
@@ -2240,7 +2227,7 @@ new generator like this:
 ``` {.haskell:hs name="code"}
 finiteRandoms :: (RandomGen g, Random a, Num n) => n -> g -> ([a], g)
 finiteRandoms 0 gen = ([], gen)
-finiteRandoms n gen = 
+finiteRandoms n gen =
     let (value, newGen) = random gen
         (restOfList, finalGen) = finiteRandoms (n-1) newGen
     in  (value:restOfList, finalGen)
@@ -2359,11 +2346,11 @@ the other as its result.
 ``` {.haskell:hs name="code"}
 import System.Random
 
-main = do   
-    gen <- getStdGen   
-    putStrLn $ take 20 (randomRs ('a','z') gen)   
+main = do
+    gen <- getStdGen
+    putStrLn $ take 20 (randomRs ('a','z') gen)
     gen' <- newStdGen
-    putStr $ take 20 (randomRs ('a','z') gen')   
+    putStr $ take 20 (randomRs ('a','z') gen')
 ```
 
 Not only do we get a new random generator when we bind <span
@@ -2390,7 +2377,7 @@ askForNumber gen = do
     numberString <- getLine
     when (not $ null numberString) $ do
         let number = read numberString
-        if randNumber == number 
+        if randNumber == number
             then putStrLn "You are correct!"
             else putStrLn $ "Sorry, it was " ++ show randNumber
         askForNumber newGen
@@ -2464,7 +2451,7 @@ import Control.Monad(when)
 
 main = do
     gen <- getStdGen
-    let (randNumber, _) = randomR (1,10) gen :: (Int, StdGen)   
+    let (randNumber, _) = randomR (1,10) gen :: (Int, StdGen)
     putStr "Which number in the range from 1 to 10 am I thinking of? "
     numberString <- getLine
     when (not $ null numberString) $ do
@@ -2918,7 +2905,7 @@ import System.IO
 import System.IO.Error
 
 main = toTry `catch` handler
-            
+
 toTry :: IO ()
 toTry = do (fileName:_) <- getArgs
            contents <- readFile fileName
@@ -2967,7 +2954,7 @@ import System.IO
 import System.IO.Error
 
 main = toTry `catch` handler
-            
+
 toTry :: IO ()
 toTry = do (fileName:_) <- getArgs
            contents <- readFile fileName
@@ -3071,23 +3058,23 @@ Let's modify our program to print out the file path that's responsible
 for the exception occurring.
 
 ``` {.haskell:hs name="code"}
-import System.Environment   
-import System.IO   
-import System.IO.Error   
-  
-main = toTry `catch` handler   
-               
-toTry :: IO ()   
-toTry = do (fileName:_) <- getArgs   
-           contents <- readFile fileName   
-           putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"   
-  
-handler :: IOError -> IO ()   
-handler e   
-    | isDoesNotExistError e = 
+import System.Environment
+import System.IO
+import System.IO.Error
+
+main = toTry `catch` handler
+
+toTry :: IO ()
+toTry = do (fileName:_) <- getArgs
+           contents <- readFile fileName
+           putStrLn $ "The file has " ++ show (length (lines contents)) ++ " lines!"
+
+handler :: IOError -> IO ()
+handler e
+    | isDoesNotExistError e =
         case ioeGetFileName e of Just path -> putStrLn $ "Whoops! File does not exist at: " ++ path
                                  Nothing -> putStrLn "Whoops! File does not exist at unknown location!"
-    | otherwise = ioError e   
+    | otherwise = ioError e
 ```
 
 In the guard where <span class="fixed">isDoesNotExistError</span> is
@@ -3135,16 +3122,3 @@ like <span class="fixed">IO (Either a b)</span>, meaning that they're
 normal I/O actions but the result that they yield when performed is of
 type <span class="fixed">Either a b</span>, meaning it's either <span
 class="fixed">Left a</span> or <span class="fixed">Right b</span>.
-
-<div class="footdiv">
-
--   [Making Our Own Types and
-    Typeclasses](making-our-own-types-and-typeclasses)
--   [Table of contents](chapters)
--   [Functionally Solving Problems](functionally-solving-problems)
-
-</div>
-
-</div>
-
-</div>

@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Starting Out](starting-out)
--   [Table of contents](chapters)
--   [Syntax in Functions](syntax-in-functions)
-
-</div>
-
 Types and Typeclasses
 =====================
 
@@ -85,7 +73,7 @@ declaration.
 
 ``` {.haskell: .hs name="code"}
 removeNonUppercase :: [Char] -> [Char]
-removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']] 
+removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
 ```
 
 <span class="fixed">removeNonUppercase</span> has a type of <span
@@ -548,15 +536,3 @@ Notice that <span class="fixed">fromIntegral</span> has several class
 constraints in its type signature. That's completely valid and as you
 can see, the class constraints are separated by commas inside the
 parentheses.
-
-<div class="footdiv">
-
--   [Starting Out](starting-out)
--   [Table of contents](chapters)
--   [Syntax in Functions](syntax-in-functions)
-
-</div>
-
-</div>
-
-</div>

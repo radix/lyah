@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Modules](modules)
--   [Table of contents](chapters)
--   [Input and Output](input-and-output)
-
-</div>
-
 Making Our Own Types and Typeclasses
 ====================================
 
@@ -64,7 +52,7 @@ represent a shape. Let's say that a shape can be a circle or a
 rectangle. Here it is:
 
 ``` {.haskell:hs name="code"}
-data Shape = Circle Float Float Float | Rectangle Float Float Float Float 
+data Shape = Circle Float Float Float | Rectangle Float Float Float Float
 ```
 
 Now what's this? Think of it like this. The <span
@@ -240,7 +228,7 @@ If we wanted to export the functions and types that we defined here in a
 module, we could start it off like this:
 
 ``` {.haskell:hs name="code"}
-module Shapes 
+module Shapes
 ( Point(..)
 , Shape(..)
 , surface
@@ -353,7 +341,7 @@ data Person = Person { firstName :: String
                      , height :: Float
                      , phoneNumber :: String
                      , flavor :: String
-                     } deriving (Show) 
+                     } deriving (Show)
 ```
 
 So instead of just naming the field types one after another and
@@ -514,7 +502,7 @@ To this:
 ``` {.haskell:hs name="code"}
 data Car a b c = Car { company :: a
                      , model :: b
-                     , year :: c 
+                     , year :: c
                      } deriving (Show)
 ```
 
@@ -904,7 +892,7 @@ at it, let's also make it an instance of all the other derivable
 typeclasses and see what we can do with it.
 
 ``` {.haskell:hs name="code"}
-data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday 
+data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
            deriving (Eq, Ord, Show, Read, Bounded, Enum)
 ```
 
@@ -976,7 +964,7 @@ class="fixed">[Char]</span>.
 
 ``` {.haskell:hs name="code"}
  type String = [Char]
- 
+
 ```
 
 ![chicken](http://s3.amazonaws.com/lyah/chicken.png)
@@ -1000,13 +988,13 @@ had.
 
 ``` {.haskell:hs name="code"}
 phoneBook :: [(String,String)]
-phoneBook =    
-    [("betty","555-2938")   
-    ,("bonnie","452-2928")   
-    ,("patsy","493-2928")   
-    ,("lucille","205-2928")   
-    ,("wendy","939-8282")   
-    ,("penny","853-2492")   
+phoneBook =
+    [("betty","555-2938")
+    ,("bonnie","452-2928")
+    ,("patsy","493-2928")
+    ,("lucille","205-2928")
+    ,("wendy","939-8282")
+    ,("penny","853-2492")
     ]
 ```
 
@@ -1211,10 +1199,10 @@ class="fixed">String</span> to tell what's happened.
 
 ``` {.haskell:hs name="code"}
 lockerLookup :: Int -> LockerMap -> Either String Code
-lockerLookup lockerNumber map = 
-    case Map.lookup lockerNumber map of 
+lockerLookup lockerNumber map =
+    case Map.lookup lockerNumber map of
         Nothing -> Left $ "Locker number " ++ show lockerNumber ++ " doesn't exist!"
-        Just (state, code) -> if state /= Taken 
+        Just (state, code) -> if state /= Taken
                                 then Right code
                                 else Left $ "Locker " ++ show lockerNumber ++ " is already taken!"
 ```
@@ -1233,7 +1221,7 @@ map:
 
 ``` {.haskell:hs name="code"}
 lockers :: LockerMap
-lockers = Map.fromList 
+lockers = Map.fromList
     [(100,(Taken,"ZD39I"))
     ,(101,(Free,"JAH3I"))
     ,(103,(Free,"IQSA9"))
@@ -1385,7 +1373,7 @@ class="fixed">.++</span>.
 
 ``` {.haskell:hs name="code"}
 infixr 5  .++
-(.++) :: List a -> List a -> List a 
+(.++) :: List a -> List a -> List a
 Empty .++ ys = ys
 (x :-: xs) .++ ys = x :-: (xs .++ ys)
 ```
@@ -1471,7 +1459,7 @@ singleton x = Node x EmptyTree EmptyTree
 
 treeInsert :: (Ord a) => a -> Tree a -> Tree a
 treeInsert x EmptyTree = singleton x
-treeInsert x (Node a left right) 
+treeInsert x (Node a left right)
     | x == a = Node x left right
     | x < a  = Node a (treeInsert x left) right
     | x > a  = Node a left (treeInsert x right)
@@ -1768,7 +1756,7 @@ class Eq a where
     (==) :: a -> a -> Bool
     (/=) :: a -> a -> Bool
     x == y = not (x /= y)
-    x /= y = not (x == y) 
+    x /= y = not (x == y)
 ```
 
 From the type declarations, we see that the <span class="fixed">a</span>
@@ -1796,7 +1784,7 @@ instance Eq (Maybe m) where
     Just x == Just y = x == y
     Nothing == Nothing = True
     _ == _ = False
-      
+
 ```
 
 This is like saying that we want to make all types of the form <span
@@ -1825,7 +1813,7 @@ instance (Eq m) => Eq (Maybe m) where
     Just x == Just y = x == y
     Nothing == Nothing = True
     _ == _ = False
-      
+
 ```
 
 We had to add a class constraint! With this *instance* declaration, we
@@ -1934,7 +1922,7 @@ and false-ness and it's pretty obvious which is which.
 
 ``` {.haskell:hs name="code"}
 instance YesNo Bool where
-    yesno = id   
+    yesno = id
 ```
 
 Huh? What's <span class="fixed">id</span>? It's just a standard library
@@ -2402,7 +2390,7 @@ class="fixed">\* -\> \* -\> \*</span>. If we look at the definition of
 <span class="fixed">Functor</span> again
 
 ``` {.haskell:hs name="code"}
-class Functor f where 
+class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
 
@@ -2572,15 +2560,3 @@ see that types have little types of their own. Again, you don't really
 have to understand everything we did here to read on, but if you
 understand how kinds work, chances are that you have a very solid grasp
 of Haskell's type system.
-
-<div class="footdiv">
-
--   [Modules](modules)
--   [Table of contents](chapters)
--   [Input and Output](input-and-output)
-
-</div>
-
-</div>
-
-</div>

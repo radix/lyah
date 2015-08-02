@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [A Fistful of Monads](a-fistful-of-monads)
--   [Table of contents](chapters)
--   [Zippers](zippers)
-
-</div>
-
 For a Few Monads More
 =====================
 
@@ -488,7 +476,7 @@ the normal algorithm:
 
 ``` {.haskell:hs name="code"}
 gcd' :: Int -> Int -> Int
-gcd' a b 
+gcd' a b
     | b == 0    = a
     | otherwise = gcd' b (a `mod` b)
 ```
@@ -1030,7 +1018,7 @@ tosses a coin three times based on that generator, we had to do this:
 
 ``` {.haskell:hs name="code"}
 threeCoins :: StdGen -> (Bool, Bool, Bool)
-threeCoins gen = 
+threeCoins gen =
     let (firstCoin, newGen) = random gen
         (secondCoin, newGen') = random newGen
         (thirdCoin, newGen'') = random newGen'
@@ -1493,7 +1481,7 @@ class="fixed">Control.Monad.Error</span>:
 
 ``` {.haskell:hs name="code"}
 instance (Error e) => Monad (Either e) where
-    return x = Right x 
+    return x = Right x
     Right x >>= f = f x
     Left err >>= f = Left err
     fail msg = Left (strMsg msg)
@@ -2403,7 +2391,7 @@ to generate all the possible positions that he can have after taking
 three moves, we made the following function:
 
 ``` {.haskell:hs name="code"}
-in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight 
+in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 ```
 
 And to check if he can go from <span class="fixed">start</span> to <span
@@ -2721,15 +2709,3 @@ carried information about probability?) to making a type, recognizing a
 monad and finally making an instance and doing something with it. I
 think that's quite fetching! By now, we should have a pretty good grasp
 on monads and what they're about.
-
-<div class="footdiv">
-
--   [A Fistful of Monads](a-fistful-of-monads)
--   [Table of contents](chapters)
--   [Zippers](zippers)
-
-</div>
-
-</div>
-
-</div>

@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [For a Few Monads More](for-a-few-monads-more)
--   [Table of contents](chapters)
--   
-
-</div>
-
 Zippers
 =======
 
@@ -56,7 +44,7 @@ the reader, for free!
 
 ``` {.haskell:hs name="code"}
 freeTree :: Tree Char
-freeTree = 
+freeTree =
     Node 'P'
         (Node 'O'
             (Node 'L'
@@ -615,7 +603,7 @@ Here's a folder with some files and sub-folders:
 ``` {.haskell:hs name="code"}
 myDisk :: FSItem
 myDisk =
-    Folder "root" 
+    Folder "root"
         [ File "goat_yelling_like_man.wmv" "baaaaaa"
         , File "pope_time.avi" "god bless"
         , Folder "pics"
@@ -709,7 +697,7 @@ located in the current focused folder:
 import Data.List (break)
 
 fsTo :: Name -> FSZipper -> FSZipper
-fsTo name (Folder folderName items, bs) = 
+fsTo name (Folder folderName items, bs) =
     let (ls, item:rs) = break (nameIs name) items
     in  (item, FSCrumb folderName ls rs:bs)
 
@@ -803,7 +791,7 @@ Behold:
 
 ``` {.haskell:hs name="code"}
 fsNewFile :: FSItem -> FSZipper -> FSZipper
-fsNewFile item (Folder folderName items, bs) = 
+fsNewFile item (Folder folderName items, bs) =
     (Folder folderName (item:items), bs)
 ```
 
@@ -972,15 +960,3 @@ Our file system also has a lot of cases where an operation could fail,
 such as trying to focus on a file or folder that doesn't exist. As an
 exercise, you can equip our file system with functions that fail
 gracefully by using the <span class="fixed">Maybe</span> monad.
-
-<div class="footdiv">
-
--   [For a Few Monads More](for-a-few-monads-more)
--   [Table of contents](chapters)
--   
-
-</div>
-
-</div>
-
-</div>

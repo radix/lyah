@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Syntax in Functions](syntax-in-functions)
--   [Table of contents](chapters)
--   [Higher Order Functions](higher-order-functions)
-
-</div>
-
 Recursion {style="margin-left:-2px"}
 =========
 
@@ -72,7 +60,7 @@ tail. That's it! Now let's implement that in Haskell.
 maximum' :: (Ord a) => [a] -> a
 maximum' [] = error "maximum of empty list"
 maximum' [x] = x
-maximum' (x:xs) 
+maximum' (x:xs)
     | x > maxTail = x
     | otherwise = maxTail
     where maxTail = maximum' xs
@@ -282,7 +270,7 @@ elem' :: (Eq a) => a -> [a] -> Bool
 elem' a [] = False
 elem' a (x:xs)
     | a == x    = True
-    | otherwise = a `elem'` xs 
+    | otherwise = a `elem'` xs
 ```
 
 Pretty simple and expected. If the head isn't the element then we check
@@ -322,7 +310,7 @@ define this function.
 ``` {.haskell:hs name="code"}
 quicksort :: (Ord a) => [a] -> [a]
 quicksort [] = []
-quicksort (x:xs) = 
+quicksort (x:xs) =
     let smallerSorted = quicksort [a | a <- xs, a <= x]
         biggerSorted = quicksort [a | a <- xs, a > x]
     in  smallerSorted ++ [x] ++ biggerSorted
@@ -407,15 +395,3 @@ that as an edge case, think about identities and think about whether
 you'll break apart the parameters of the function (for instance, lists
 are usually broken into a head and a tail via pattern matching) and on
 which part you'll use the recursive call.
-
-<div class="footdiv">
-
--   [Syntax in Functions](syntax-in-functions)
--   [Table of contents](chapters)
--   [Higher Order Functions](higher-order-functions)
-
-</div>
-
-</div>
-
-</div>

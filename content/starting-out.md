@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Introduction](introduction)
--   [Table of contents](chapters)
--   [Types and Typeclasses](types-and-typeclasses)
-
-</div>
-
 Starting Out {style="margin-left:-3px"}
 ============
 
@@ -83,7 +71,7 @@ False
 ghci> True && True
 True
 ghci> False || True
-True 
+True
 ghci> not False
 True
 ghci> not (True && True)
@@ -102,7 +90,7 @@ False
 ghci> 5 /= 4
 True
 ghci> "hello" == "hello"
-True 
+True
 ```
 
 What about doing <span class="fixed">5 + "llama"</span> or <span
@@ -114,7 +102,7 @@ No instance for (Num [Char])
 arising from a use of `+' at <interactive>:1:0-9
 Possible fix: add an instance declaration for (Num [Char])
 In the expression: 5 + "llama"
-In the definition of `it': it = 5 + "llama" 
+In the definition of `it': it = 5 + "llama"
 ```
 
 Yikes! What GHCI is telling us here is that <span
@@ -152,7 +140,7 @@ one of the most boring functions in Haskell.
 
 ``` {.haskell: .ghci name="code"}
 ghci> succ 8
-9 
+9
 ```
 
 The <span class="fixed">succ</span> function takes anything that has a
@@ -171,7 +159,7 @@ ghci> min 9 10
 ghci> min 3.4 3.2
 3.2
 ghci> max 100 101
-101 
+101
 ```
 
 Function application (calling a function by putting a space after it and
@@ -243,7 +231,7 @@ Ok, modules loaded: Main.
 ghci> doubleMe 9
 18
 ghci> doubleMe 8.3
-16.6 
+16.6
 ```
 
 Because <span class="fixed">+</span> works on integers as well as on
@@ -253,7 +241,7 @@ that takes two numbers and multiplies each by two and then adds them
 together.
 
 ``` {.haskell: .hs name="code"}
-doubleUs x y = x*2 + y*2 
+doubleUs x y = x*2 + y*2
 ```
 
 Simple. We could have also defined it as <span class="fixed">doubleUs x
@@ -276,7 +264,7 @@ you made. With that in mind, we could redefine <span
 class="fixed">doubleUs</span> like this:
 
 ``` {.haskell: .hs name="code"}
-doubleUs x y = doubleMe x + doubleMe y 
+doubleUs x y = doubleMe x + doubleMe y
 ```
 
 This is a very simple example of a common pattern you will see
@@ -301,7 +289,7 @@ bigger than 100 are big enough as it is!
 ``` {.haskell: .hs name="code"}
 doubleSmallNumber x = if x > 100
                         then x
-                        else x*2 
+                        else x*2
 ```
 
 ![this is you](http://s3.amazonaws.com/lyah/baby.png)
@@ -338,7 +326,7 @@ variable. Because <span class="fixed">'</span> is a valid character in
 functions, we can make a function like this.
 
 ``` {.haskell: .hs name="code"}
-conanO'Brien = "It's a-me, Conan O'Brien!" 
+conanO'Brien = "It's a-me, Conan O'Brien!"
 ```
 
 There are two noteworthy things here. The first is that in the function
@@ -465,7 +453,7 @@ ghci> b ++ [[1,1,1,1]]
 ghci> [6,6,6]:b
 [[6,6,6],[1,2,3,4],[5,3,3,3],[1,2,2,3,4],[1,2,3]]
 ghci> b !! 2
-[1,2,2,3,4] 
+[1,2,2,3,4]
 ```
 
 The lists within a list can be of different lengths but they can't be of
@@ -501,7 +489,7 @@ head. The head of a list is basically its first element.
 
 ``` {.haskell: .ghci name="code"}
 ghci> head [5,4,3,2,1]
-5 
+5
 ```
 
 <span class="label function">tail</span> takes a list and returns its
@@ -509,7 +497,7 @@ tail. In other words, it chops off a list's head.
 
 ``` {.haskell: .ghci name="code"}
 ghci> tail [5,4,3,2,1]
-[4,3,2,1] 
+[4,3,2,1]
 ```
 
 <span class="label function">last</span> takes a list and returns its
@@ -517,7 +505,7 @@ last element.
 
 ``` {.haskell: .ghci name="code"}
 ghci> last [5,4,3,2,1]
-1 
+1
 ```
 
 <span class="label function">init</span> takes a list and returns
@@ -525,7 +513,7 @@ everything except its last element.
 
 ``` {.haskell: .ghci name="code"}
 ghci> init [5,4,3,2,1]
-[5,4,3,2] 
+[5,4,3,2]
 ```
 
 If we think of a list as a monster, here's what's what.
@@ -601,7 +589,7 @@ ghci> drop 3 [8,4,2,1,5,6]
 ghci> drop 0 [1,2,3,4]
 [1,2,3,4]
 ghci> drop 100 [1,2,3,4]
-[] 
+[]
 ```
 
 <span class="label function">maximum</span> takes a list of stuff that
@@ -613,7 +601,7 @@ can be put in some kind of order and returns the biggest element.
 ghci> minimum [8,4,2,1,5,6]
 1
 ghci> maximum [1,9,2,3,4]
-9 
+9
 ```
 
 <span class="label function">sum</span> takes a list of numbers and
@@ -628,7 +616,7 @@ ghci> sum [5,2,1,6,3,2,5,7]
 ghci> product [6,2,1,2]
 24
 ghci> product [1,2,5,6,7,9,2,0]
-0 
+0
 ```
 
 <span class="label function">elem</span> takes a thing and a list of
@@ -672,7 +660,7 @@ ghci> [1..20]
 ghci> ['a'..'z']
 "abcdefghijklmnopqrstuvwxyz"
 ghci> ['K'..'Z']
-"KLMNOPQRSTUVWXYZ" 
+"KLMNOPQRSTUVWXYZ"
 ```
 
 Ranges are cool because you can also specify a step. What if we want all
@@ -682,7 +670,7 @@ even numbers between 1 and 20? Or every third number between 1 and 20?
 ghci> [2,4..20]
 [2,4,6,8,10,12,14,16,18,20]
 ghci> [3,6..20]
-[3,6,9,12,15,18] 
+[3,6,9,12,15,18]
 ```
 
 It's simply a matter of separating the first two elements with a comma
@@ -728,7 +716,7 @@ on forever so you have to slice it off somewhere.
 ghci> take 10 (cycle [1,2,3])
 [1,2,3,1,2,3,1,2,3,1]
 ghci> take 12 (cycle "LOL ")
-"LOL LOL LOL " 
+"LOL LOL LOL "
 ```
 
 <span class="label function">repeat</span> takes an element and produces
@@ -791,7 +779,7 @@ remainder when divided with the number 7 is 3? Easy.
 
 ``` {.haskell: .ghci name="code"}
 ghci> [ x | x <- [50..100], x `mod` 7 == 3]
-[52,59,66,73,80,87,94] 
+[52,59,66,73,80,87,94]
 ```
 
 Success! Note that weeding out lists by predicates is also called
@@ -804,7 +792,7 @@ it out of our list. For convenience, we'll put that comprehension inside
 a function so we can easily reuse it.
 
 ``` {.haskell: .ghci name="code"}
-boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x] 
+boomBangs xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
 ```
 
 The last part of the comprehension is the predicate. The function <span
@@ -815,7 +803,7 @@ element is included in the list only if all the predicates evaluate to
 
 ``` {.haskell: .hs name="code"}
 ghci> boomBangs [7..13]
-["BOOM!","BOOM!","BANG!","BANG!"] 
+["BOOM!","BOOM!","BANG!","BANG!"]
 ```
 
 We can include several predicates. If we wanted all numbers from 10 to
@@ -839,7 +827,7 @@ numbers in those lists, here's what we'd do.
 
 ``` {.haskell: .ghci name="code"}
 ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
-[16,20,22,40,50,55,80,100,110] 
+[16,20,22,40,50,55,80,100,110]
 ```
 
 As expected, the length of the new list is 9. What if we wanted all
@@ -847,7 +835,7 @@ possible products that are more than 50?
 
 ``` {.haskell: .ghci name="code"}
 ghci> [ x*y | x <- [2,5,10], y <- [8,10,11], x*y > 50]
-[55,80,100,110] 
+[55,80,100,110]
 ```
 
 How about a list comprehension that combines a list of adjectives and a
@@ -858,7 +846,7 @@ ghci> let nouns = ["hobo","frog","pope"]
 ghci> let adjectives = ["lazy","grouchy","scheming"]
 ghci> [adjective ++ " " ++ noun | adjective <- adjectives, noun <- nouns]
 ["lazy hobo","lazy frog","lazy pope","grouchy hobo","grouchy frog",
-"grouchy pope","scheming hobo","scheming frog","scheming pope"] 
+"grouchy pope","scheming hobo","scheming frog","scheming pope"]
 ```
 
 I know! Let's write our own version of <span
@@ -866,7 +854,7 @@ class="fixed">length</span>! We'll call it <span
 class="fixed">length'</span>.
 
 ``` {.haskell: .hs name="code"}
-length' xs = sum [1 | _ <- xs] 
+length' xs = sum [1 | _ <- xs]
 ```
 
 <span class="fixed">\_</span> means that we don't care what we'll draw
@@ -881,7 +869,7 @@ comprehensions to process and produce strings. Here's a function that
 takes a string and removes everything except uppercase letters from it.
 
 ``` {.haskell: .hs name="code"}
-removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']] 
+removeNonUppercase st = [ c | c <- st, c `elem` ['A'..'Z']]
 ```
 
 Testing it out:
@@ -890,7 +878,7 @@ Testing it out:
 ghci> removeNonUppercase "Hahaha! Ahahaha!"
 "HA"
 ghci> removeNonUppercase "IdontLIKEFROGS"
-"ILIKEFROGS" 
+"ILIKEFROGS"
 ```
 
 The predicate here does all the work. It says that the character will be
@@ -1046,7 +1034,7 @@ smaller than 10 has a perimeter of 24? First, let's try generating all
 triangles with sides equal to or smaller than 10:
 
 ``` {.haskell: .ghci name="code"}
-ghci> let triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10] ] 
+ghci> let triangles = [ (a,b,c) | c <- [1..10], b <- [1..10], a <- [1..10] ]
 ```
 
 We're just drawing from three lists and our output function is combining
@@ -1058,7 +1046,7 @@ this function by taking into consideration that side b isn't larger than
 the hypothenuse and that side a isn't larger than side b.
 
 ``` {.haskell: .ghci name="code"}
-ghci> let rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2] 
+ghci> let rightTriangles = [ (a,b,c) | c <- [1..10], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
 ```
 
 We're almost done. Now, we just modify the function by saying that we
@@ -1074,15 +1062,3 @@ And there's our answer! This is a common pattern in functional
 programming. You take a starting set of solutions and then you apply
 transformations to those solutions and filter them until you get the
 right ones.
-
-<div class="footdiv">
-
--   [Introduction](introduction)
--   [Table of contents](chapters)
--   [Types and Typeclasses](types-and-typeclasses)
-
-</div>
-
-</div>
-
-</div>

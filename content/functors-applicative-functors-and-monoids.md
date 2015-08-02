@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Functionally Solving Problems](functionally-solving-problems)
--   [Table of contents](chapters)
--   [A Fistful of Monads](a-fistful-of-monads)
-
-</div>
-
 Functors, Applicative Functors and Monoids
 ==========================================
 
@@ -147,7 +135,7 @@ We can play around with it to gain some intuition. It's pretty simple
 really. Check out this piece of code:
 
 ``` {.haskell:hs name="code"}
-main = do line <- getLine 
+main = do line <- getLine
           let line' = reverse line
           putStrLn $ "You said " ++ line' ++ " backwards!"
           putStrLn $ "Yes, you really said" ++ line' ++ " backwards!"
@@ -1147,8 +1135,8 @@ possible products of <span class="fixed">[2,5,10]</span> and <span
 class="fixed">[8,10,11]</span>, so we did this:
 
 ``` {.haskell:hs name="code"}
-ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]   
-[16,20,22,40,50,55,80,100,110]   
+ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
+[16,20,22,40,50,55,80,100,110]
 ```
 
 We're just drawing from two lists and applying a function between every
@@ -1944,7 +1932,7 @@ class Functor f where
 So we just start out with:
 
 ``` {.haskell:hs name="code"}
-instance Functor Maybe where 
+instance Functor Maybe where
 ```
 
 And then implement <span class="fixed">fmap</span>. All the type
@@ -2745,7 +2733,7 @@ would be like so:
 
 ``` {.haskell:hs name="code"}
 lengthCompare :: String -> String -> Ordering
-lengthCompare x y = let a = length x `compare` length y 
+lengthCompare x y = let a = length x `compare` length y
                         b = x `compare` y
                     in  if a == EQ then b else a
 ```
@@ -3176,15 +3164,3 @@ ghci> F.foldMap (\x -> [x]) testTree
 
 What's cool is that all of these trick aren't limited to trees, they
 work on any instance of <span class="fixed">Foldable</span>.
-
-<div class="footdiv">
-
--   [Functionally Solving Problems](functionally-solving-problems)
--   [Table of contents](chapters)
--   [A Fistful of Monads](a-fistful-of-monads)
-
-</div>
-
-</div>
-
-</div>

@@ -1,16 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Input and Output](input-and-output)
--   [Table of contents](chapters)
--   [Functors, Applicative Functors and
-    Monoids](functors-applicative-functors-and-monoids)
-
-</div>
-
 Functionally Solving Problems
 =============================
 
@@ -599,7 +586,7 @@ a</span>
 
 ``` {.haskell:hs name="code"}
 roadStep :: (Path, Path) -> Section -> (Path, Path)
-roadStep (pathA, pathB) (Section a b c) = 
+roadStep (pathA, pathB) (Section a b c) =
     let priceA = sum $ map snd pathA
         priceB = sum $ map snd pathB
         forwardPriceToA = priceA + a
@@ -811,16 +798,3 @@ of roads, which you can then feed to what we just wrote. If you get
 stack overflows, try using <span class="fixed">foldl'</span> instead of
 <span class="fixed">foldl</span>, because <span
 class="fixed">foldl'</span> is strict.
-
-<div class="footdiv">
-
--   [Input and Output](input-and-output)
--   [Table of contents](chapters)
--   [Functors, Applicative Functors and
-    Monoids](functors-applicative-functors-and-monoids)
-
-</div>
-
-</div>
-
-</div>

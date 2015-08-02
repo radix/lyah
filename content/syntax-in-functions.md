@@ -1,15 +1,3 @@
-<div class="bgwrapper">
-
-<div id="content">
-
-<div class="footdiv" style="margin-bottom:25px;">
-
--   [Types and Typeclasses](types-and-typeclasses)
--   [Table of contents](chapters)
--   [Recursion](recursion)
-
-</div>
-
 Syntax in Functions {style="margin-left:-3px"}
 ===================
 
@@ -32,7 +20,7 @@ the number we supplied to it is a seven or not.
 ``` {.haskell: .hs name="code"}
 lucky :: (Integral a) => a -> String
 lucky 7 = "LUCKY NUMBER SEVEN!"
-lucky x = "Sorry, you're out of luck, pal!" 
+lucky x = "Sorry, you're out of luck, pal!"
 ```
 
 When you call <span class="fixed">lucky</span>, the patterns will be
@@ -168,7 +156,7 @@ Check this out:
 ``` {.haskell: .ghci name="code"}
 ghci> let xs = [(1,3), (4,3), (2,4), (5,3), (5,6), (3,1)]
 ghci> [a+b | (a,b) <- xs]
-[4,7,6,8,11,4] 
+[4,7,6,8,11,4]
 ```
 
 Should a pattern match fail, it will just move on to the next element.
@@ -415,7 +403,7 @@ that can be compared and returns the larger of them.
 
 ``` {.haskell:hs name="code"}
 max' :: (Ord a) => a -> a -> a
-max' a b 
+max' a b
     | a > b     = a
     | otherwise = b
 ```
@@ -744,7 +732,7 @@ For instance:
 ``` {.haskell:hs name="code"}
 describeList :: [a] -> String
 describeList xs = "The list is " ++ case xs of [] -> "empty."
-                                               [x] -> "a singleton list." 
+                                               [x] -> "a singleton list."
                                                xs -> "a longer list."
 ```
 
@@ -760,15 +748,3 @@ describeList xs = "The list is " ++ what xs
           what [x] = "a singleton list."
           what xs = "a longer list."
 ```
-
-<div class="footdiv">
-
--   [Types and Typeclasses](types-and-typeclasses)
--   [Table of contents](chapters)
--   [Recursion](recursion)
-
-</div>
-
-</div>
-
-</div>
