@@ -11,6 +11,7 @@ source code for the original book.
 # TODO:
 
 - get rid of all sexist, racist, demeaning etc language / examples / pictures
+- get rid of HTML cruft in the markdown files
 - automate building to an HTML site
 - publish somewhere
 - choose a new name so it's identifiably different
