@@ -427,10 +427,10 @@ ghci> filter even [1..10]
 [2,4,6,8,10]
 ghci> let notNull x = not (null x) in filter notNull [[1,2,3],[],[3,4,5],[2,2],[],[],[]]
 [[1,2,3],[3,4,5],[2,2]]
-ghci> filter (`elem` ['a'..'z']) "u LaUgH aT mE BeCaUsE I aM diFfeRent"
-"uagameasadifeent"
-ghci> filter (`elem` ['A'..'Z']) "i lauGh At You BecAuse u r aLL the Same"
-"GAYBALLS"
+ghci> filter (`elem` ['a'..'z']) "CATS doN'T EAT gARBANZO BEANs"
+"dogs"
+ghci> filter (`elem` ['A'..'Z']) "dogs CAn't eaT Silicon"
+"CATS"
 ```
 
 All of this could also be achived with list comprehensions by the use of
