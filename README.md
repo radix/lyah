@@ -9,10 +9,11 @@ source code for the original book.
 
 # Why I'm doing this
 
-LYAH isn't perfect, but it's got a fairly good/cute approach to learning. But
-it's full of pretty offensive crap that can easily turn people off of learning
-Haskell, and I personally want Haskell to grow a large and diverse development
-community, and that requires being welcoming and friendly to everyone.
+LYAH isn't perfect, but it's got a fairly good/cute approach to learning. The
+problem is, it's full of pretty offensive crap that can easily turn people off
+of learning Haskell, and I personally want Haskell to grow a large and diverse
+development community, and that requires being welcoming and friendly to
+everyone.
 
 Why not just write a new book from scratch? Well, I'm not qualified. And there
 are other people who are. So why not just wait for them to finish, and start
