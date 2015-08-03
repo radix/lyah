@@ -56,7 +56,7 @@ a PR for anything you find!
 # Non-exhaustive list of stuff to replace
 
 - bmi example (syntax-in-functions)
-- "gayballs" (higher-order-functions)
+- ~~"gayballs" (higher-order-functions)~~
 - guys
 - man
 - girlfriend (input-and-output)
