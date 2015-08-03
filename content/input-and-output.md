@@ -59,7 +59,7 @@ Linux-like environment for Windows, A.K.A. just what you need.
 
 So, for starters, punch in the following in your favorite text editor:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = putStrLn "hello, world"
 ```
 
@@ -83,7 +83,7 @@ Linking helloworld ...
 Okay! With any luck, you got something like this and now you can run
 your program by doing <span class="fixed">./helloworld</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 $ ./helloworld
 hello, world
 ```
@@ -94,7 +94,7 @@ to the terminal. How extraordinarily boring!
 Let's examine what we wrote. First, let's look at the type of the
 function <span class="fixed">putStrLn</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t putStrLn
 putStrLn :: String -> IO ()
 ghci> :t putStrLn "hello, world"
@@ -127,7 +127,7 @@ Having your whole program be just one I/O action seems kind of limiting.
 That's why we can use *do* syntax to glue together several I/O actions
 into one. Take a look at the following example:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     putStrLn "Hello, what's your name?"
     name <- getLine
@@ -155,7 +155,7 @@ reads a line from the input and stores it into a variable called <span
 class="fixed">name</span>. Does it really? Well, let's examine the type
 of <span class="fixed">getLine</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t getLine
 getLine :: IO String
 ```
@@ -196,7 +196,7 @@ function that, say, takes your name (a normal string) as a parameter and
 tells you your fortune and your whole life's future based on your name.
 We can do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     putStrLn "Hello, what's your name?"
     name <- getLine
@@ -210,7 +210,7 @@ String</span> function!
 
 Take a look at this piece of code. Is it valid?
 
-``` {.haskell:hs name="code"}
+```haskell
 nameTag = "Hello, my name is " ++ getLine
 ```
 
@@ -233,7 +233,7 @@ Every I/O action that gets performed has a result encapsulated within
 it. That's why our previous example program could also have been written
 like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     foo <- putStrLn "Hello, what's your name?"
     name <- getLine
@@ -258,7 +258,7 @@ result, like <span class="fixed">putStrLn *something*</span>.
 
 Beginners sometimes think that doing
 
-``` {.haskell:hs name="code"}
+```haskell
 name = getLine
 ```
 
@@ -280,7 +280,7 @@ Oh, right, there's also one more case when I/O actions will be
 performed. When we type out an I/O action in GHCI and press return, it
 will be performed.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> putStrLn "HEEY"
 HEEY
 ```
@@ -300,7 +300,7 @@ evaluated that sees them. We also said that in list comprehensions, the
 *in* part isn't needed. Well, you can use them in *do* blocks pretty
 much like you use them in list comprehensions. Check this out:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Char
 
 main = do
@@ -338,7 +338,7 @@ Now we're going to make a program that continuously reads a line and
 prints out the same line with the words reversed. The program's
 execution will stop when we input a blank line. This is the program:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     line <- getLine
     if null line
@@ -394,7 +394,7 @@ Because, we have to have exactly one I/O action after the *else*, we use
 a *do* block to glue together two I/O actions into one. You could also
 write that part out as:
 
-``` {.haskell:hs name="code"}
+```haskell
         else (do
             putStrLn $ reverseWords line
             main)
@@ -437,7 +437,7 @@ Using <span class="fixed">return</span> doesn't cause the I/O *do* block
 to end in execution or anything like that. For instance, this program
 will quite happily carry out all the way to the last line:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     return ()
     return "HAHAHA"
@@ -453,7 +453,7 @@ and that result is thrown away because it isn't bound to a name. We can
 use <span class="fixed">return</span> in combination with <span
 class="fixed">\<-</span> to bind stuff to names.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     a <- return "hell"
     b <- return "yeah!"
@@ -467,7 +467,7 @@ takes a box (and performs it) and takes the value out of it, binding it
 to a name. But doing this is kind of redundant, especially since you can
 use *let* bindings in *do* blocks to bind to names, like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     let a = "hell"
         b = "yeah"
@@ -501,7 +501,7 @@ only <span class="fixed">putStr</span> doesn't jump into a new line
 after printing out the string while <span class="fixed">putStrLn</span>
 does.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do   putStr "Hey, "
             putStr "I'm "
             putStrLn "Andy!"
@@ -519,7 +519,7 @@ the unit. A dud value, so it doesn't make sense to bind it.
 <span class="label function">putChar</span> takes a character and
 returns an I/O action that will print it out to the terminal.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do   putChar 't'
             putChar 'e'
             putChar 'h'
@@ -539,7 +539,7 @@ print the first character of the string by doing <span
 class="fixed">putChar</span> and then print of them using <span
 class="fixed">putStr</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 putStr :: String -> IO ()
 putStr [] = return ()
 putStr (x:xs) = do
@@ -562,7 +562,7 @@ class="fixed">show</span> on a value and then feeds that to <span
 class="fixed">putStrLn</span>, which returns an I/O action that will
 print out our value.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do   print True
             print 2
             print "haha"
@@ -570,7 +570,7 @@ main = do   print True
             print [3,4,3]
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 $ runhaskell print_test.hs
 True
 2
@@ -587,7 +587,7 @@ prompt? When we type out a value (like <span class="fixed">3</span> or
 actually uses <span class="fixed">print</span> on that value to display
 it on our terminal!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 3
 3
 ghci> print 3
@@ -610,7 +610,7 @@ within the I/O action is a <span class="fixed">Char</span>. Note that
 due to buffering, reading of the characters won't actually happen until
 the user mashes the return key.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     c <- getChar
     if c /= ' '
@@ -650,7 +650,7 @@ we could rewrite the previous piece of code with which we demonstrated
 <span class="fixed">getChar</span> by using <span
 class="fixed">when</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad
 
 main = do
@@ -670,7 +670,7 @@ other. The result contained in that I/O action will be a list of the
 results of all the I/O actions that were performed. Its type signature
 is <span class="fixed">sequence :: [IO a] -\> IO [a]</span>. Doing this:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     a <- getLine
     b <- getLine
@@ -680,7 +680,7 @@ main = do
 
 Is exactly the same as doing this:.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     rs <- sequence [getLine, getLine, getLine]
     print rs
@@ -700,7 +700,7 @@ of I/O actions, because that's like writing <span class="fixed">[print
 1, print 2, print 3, print 4]</span>. If we want to transform that list
 of I/O actions into an I/O action, we have to sequence it.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> sequence (map print [1,2,3,4,5])
 1
 2
@@ -732,7 +732,7 @@ does the same, only it throws away the result later. We usually use
 <span class="fixed">mapM\_</span> when we don't care what result our
 sequenced I/O actions have.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM print [1,2,3]
 1
 2
@@ -750,7 +750,7 @@ It's located in <span class="fixed">Control.Monad</span>. This little
 program will indefinitely ask the user for some input and spit it back
 to him, CAPSLOCKED:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad
 import Data.Char
 
@@ -768,7 +768,7 @@ function to map over that list, which is then sequenced. Why is that
 useful? Well, with some creative use of lambdas and *do* notation, we
 can do stuff like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad
 
 main = do
@@ -885,7 +885,7 @@ line, returned it to him in CAPSLOCK and then did that all over again,
 indefinitely. Just so you don't have to scroll all the way back, here it
 is again:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad
 import Data.Char
 
@@ -931,7 +931,7 @@ into some output. That's why we can use <span
 class="fixed">getContents</span> to make our program even shorter and
 better:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Char
 
 main = do
@@ -990,7 +990,7 @@ signified by an end-of-file character.
 Let's make program that takes some input and prints out only those lines
 that are shorter than 10 characters. Observe:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     contents <- getContents
     putStr (shortLinesOnly contents)
@@ -1054,7 +1054,7 @@ class="fixed">String -\> String</span> as a parameter and returns an I/O
 action that will take some input, run that function on it and then print
 out the function's result. Let's modify our program to use that.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = interact shortLinesOnly
 
 shortLinesOnly :: String -> String
@@ -1069,7 +1069,7 @@ Just to show that this can be achieved in much less code (even though it
 will be less readable) and to demonstrate our function composition
 skill, we're going to rework that a bit further.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = interact $ unlines . filter ((<10) . length) . lines
 ```
 
@@ -1096,14 +1096,14 @@ something like <span class="fixed">"elephant\\nABCBA\\nwhatever"</span>
 into <span class="fixed">"not a palindrome\\npalindrome\\nnot a
 palindrome"</span>. Let's do this!
 
-``` {.haskell:hs name="code"}
+```haskell
 respondPalindromes contents = unlines (map (\xs -> if isPalindrome xs then "palindrome" else "not a palindrome") (lines contents))
     where   isPalindrome xs = xs == reverse xs
 ```
 
 Let's write this in point-free.
 
-``` {.haskell:hs name="code"}
+```haskell
 respondPalindromes = unlines . map (\xs -> if isPalindrome xs then "palindrome" else "not a palindrome") . lines
     where   isPalindrome xs = xs == reverse xs
 ```
@@ -1116,7 +1116,7 @@ that lambda over it, giving <span class="fixed">["not a palindrome",
 class="fixed">unlines</span> joins that list into a single, newline
 delimited string. Now we can do
 
-``` {.haskell:hs name="code"}
+```haskell
 main = interact respondPalindromes
 ```
 
@@ -1198,7 +1198,7 @@ I think you need a new one!
 
 And here's our program:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 
 main = do
@@ -1238,13 +1238,13 @@ file and have the file's associated handle encapsulated as its result.
 synonym](making-our-own-types-and-typeclasses#type-synonyms) for <span
 class="fixed">String</span>, simply defined as:
 
-``` {.haskell:hs name="code"}
+```haskell
 type FilePath = String
 ```
 
 <span class="fixed">IOMode</span> is a type that's defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data IOMode = ReadMode | WriteMode | AppendMode | ReadWriteMode
 ```
 
@@ -1314,7 +1314,7 @@ we give it returns. This might sound a bit complicated, but it's really
 simple, especially with lambdas, here's our previous example rewritten
 to use <span class="fixed">withFile</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 
 main = do
@@ -1335,7 +1335,7 @@ action back from that function and then makes an I/O action that's just
 like it, only it closes the file afterwards. Here's how we can make our
 own <span class="fixed">withFile</span> function:
 
-``` {.haskell:hs name="code"}
+```haskell
 withFile' :: FilePath -> IOMode -> (Handle -> IO a) -> IO a
 withFile' path mode f = do
     handle <- openFile path mode
@@ -1393,7 +1393,7 @@ binding it to a handle and then doing <span
 class="fixed">hGetContents</span>. Here's how we could have written our
 previous example with <span class="fixed">readFile</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 
 main = do
@@ -1413,7 +1413,7 @@ will be stomped down to zero length before being written on. Here's how
 to turn *girlfriend.txt* into a CAPSLOCKED version and write it to
 *girlfriendcaps.txt*:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 import Data.Char
 
@@ -1440,7 +1440,7 @@ Let's say we have a file *todo.txt* that has one task per line that we
 have to do. Now let's make a program that takes a line from the standard
 input and adds that to our to-do list.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 
 main = do
@@ -1470,7 +1470,7 @@ class="fixed">contents \<- hGetContents handle</span> doesn't cause the
 whole file to be read at once and stored in-memory. It's I/O lazy, so
 doing this:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     withFile "something.txt" ReadMode (\handle -> do
         contents <- hGetContents handle
@@ -1508,7 +1508,7 @@ much.
 Here's our previous piece of code, only it doesn't read it line by line
 but reads the whole file in chunks of 2048 bytes.
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     withFile "something.txt" ReadMode (\handle -> do
         hSetBuffering handle $ BlockBuffering (Just 2048)
@@ -1550,7 +1550,7 @@ class="fixed">System.IO</span>, but they'll all be explained.
 
 Anyway, here's the program for removing an item from *todo.txt*:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.IO
 import System.Directory
 import Data.List
@@ -1724,7 +1724,7 @@ contains the program name.
 
 Here's a small program that demonstrates how these two work:
 
-``` {.haskell:hs name="code"}
+```haskell
  import System.Environment
  import Data.List
 
@@ -1788,7 +1788,7 @@ type <span class="fixed">[String] -\> IO ()</span>. They're going to
 take the argument list as a parameter and return an I/O action that does
 the viewing, adding, deleting, etc.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.Directory
 import System.IO
@@ -1806,7 +1806,7 @@ class="fixed">add</span>, <span class="fixed">view</span> and <span
 class="fixed">remove</span>, so let's start with <span
 class="fixed">main</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     (command:args) <- getArgs
     let (Just action) = lookup command dispatch
@@ -1849,7 +1849,7 @@ class="fixed">add</span>, <span class="fixed">view</span> and <span
 class="fixed">remove</span>. Let's start with <span
 class="fixed">add</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 add :: [String] -> IO ()
 add [fileName, todoItem] = appendFile fileName (todoItem ++ "\n")
 ```
@@ -1871,7 +1871,7 @@ class="fixed">command</span> will be <span class="fixed">"view"</span>
 and <span class="fixed">args</span> will be <span
 class="fixed">["todo.txt"]</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 view :: [String] -> IO ()
 view [fileName] = do
     contents <- readFile fileName
@@ -1892,7 +1892,7 @@ we're not hardcoding *todo.txt* but getting it as an argument. We're
 also not prompting the user for the task number to delete, we're getting
 it as an argument.
 
-``` {.haskell:hs name="code"}
+```haskell
 remove :: [String] -> IO ()
 remove [fileName, numberString] = do
     handle <- openFile fileName ReadMode
@@ -1916,7 +1916,7 @@ class="fixed">fileName</span>.
 
 Here's the whole program at once, in all its glory!
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.Directory
 import System.IO
@@ -2038,7 +2038,7 @@ before giving me the results. All that matters are its results. However,
 this makes it a bit tricky for getting random numbers. If I have a
 function like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 randomNumber :: (Num a) => a
 randomNumber = 4
 ```
@@ -2092,7 +2092,7 @@ based on that, gives us a random generator. Okay then, let's try using
 <span class="fixed">random</span> and <span
 class="fixed">mkStdGen</span> in tandem to get a (hardly random) number.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> random (mkStdGen 100)
 ```
 
@@ -2109,7 +2109,7 @@ class="fixed">Random</span> typeclass, so we have to inform Haskell what
 kind of type we want. Also let's not forget that it returns a random
 value and a random generator in a pair.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> random (mkStdGen 100) :: (Int, StdGen)
 (-1352021624,651872571 1655838864)
 ```
@@ -2119,7 +2119,7 @@ tuple is our number whereas the second component is a textual
 representation of our new random generator. What happens if we call
 <span class="fixed">random</span> with the same random generator again?
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> random (mkStdGen 100) :: (Int, StdGen)
 (-1352021624,651872571 1655838864)
 ```
@@ -2127,7 +2127,7 @@ ghci> random (mkStdGen 100) :: (Int, StdGen)
 Of course. The same result for the same parameters. So let's try giving
 it a different random generator as a parameter.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> random (mkStdGen 949494) :: (Int, StdGen)
 (539963926,466647808 1655838864)
 ```
@@ -2135,7 +2135,7 @@ ghci> random (mkStdGen 949494) :: (Int, StdGen)
 Alright, cool, great, a different number. We can use the type annotation
 to get different types back from that function.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> random (mkStdGen 949488) :: (Float, StdGen)
 (0.8938442,1597344447 1655838864)
 ghci> random (mkStdGen 949488) :: (Bool, StdGen)
@@ -2159,7 +2159,7 @@ We'll represent a coin with a simple <span class="fixed">Bool</span>.
 <span class="fixed">True</span> is tails, <span
 class="fixed">False</span> is heads.
 
-``` {.haskell:hs name="code"}
+```haskell
 threeCoins :: StdGen -> (Bool, Bool, Bool)
 threeCoins gen =
     let (firstCoin, newGen) = random gen
@@ -2176,7 +2176,7 @@ all the coins would have had the same value and we'd only be able to get
 <span class="fixed">(False, False, False)</span> or <span
 class="fixed">(True, True, True)</span> as a result.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> threeCoins (mkStdGen 21)
 (True,True,True)
 ghci> threeCoins (mkStdGen 22)
@@ -2197,7 +2197,7 @@ called <span class="label function">randoms</span> that takes a
 generator and returns an infinite sequence of values based on that
 generator.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> take 5 $ randoms (mkStdGen 11) :: [Int]
 [-1807975507,545074951,-1015194702,-1622477312,-502893664]
 ghci> take 5 $ randoms (mkStdGen 11) :: [Bool]
@@ -2210,7 +2210,7 @@ Why doesn't <span class="fixed">randoms</span> return a new generator as
 well as a list? We could implement the <span
 class="fixed">randoms</span> function very easily like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 randoms' :: (RandomGen g, Random a) => g -> [a]
 randoms' gen = let (value, newGen) = random gen in value:randoms' newGen
 ```
@@ -2224,7 +2224,7 @@ numbers, we can't give the new random generator back.
 We could make a function that generates a finite stream of numbers and a
 new generator like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 finiteRandoms :: (RandomGen g, Random a, Num n) => n -> g -> ([a], g)
 finiteRandoms 0 gen = ([], gen)
 finiteRandoms n gen =
@@ -2250,7 +2250,7 @@ it's kind of like <span class="fixed">random</span>, only it takes as
 its first parameter a pair of values that set the lower and upper bounds
 and the final value produced will be within those bounds.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> randomR (1,6) (mkStdGen 359353)
 (6,1494289578 40692)
 ghci> randomR (1,6) (mkStdGen 35935335)
@@ -2261,7 +2261,7 @@ There's also <span class="label function">randomRs</span>, which
 produces a stream of random values within our defined ranges. Check this
 out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> take 10 $ randomRs ('a','z') (mkStdGen 3) :: [Char]
 "ndkxbvmomg"
 ```
@@ -2283,7 +2283,7 @@ when you bind it to something.
 
 Here's a simple program that generates a random string.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 
 main = do
@@ -2306,7 +2306,7 @@ Be careful though, just performing <span class="fixed">getStdGen</span>
 twice will ask the system for the same global generator twice. If you do
 this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 
 main = do
@@ -2325,7 +2325,7 @@ function from <span class="fixed">Data.List</span>, which splits a list
 at some index and returns a tuple that has the first part as the first
 component and the second part as the second component.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 import Data.List
 
@@ -2343,7 +2343,7 @@ action, which splits our current random generator into two generators.
 It updates the global random generator with one of them and encapsulates
 the other as its result.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 
 main = do
@@ -2362,7 +2362,7 @@ class="fixed">gen</span>.
 Here's a little program that will make the user guess which number it's
 thinking of.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 import Control.Monad(when)
 
@@ -2445,7 +2445,7 @@ Which number in the range from 1 to 10 am I thinking of?
 
 Another way to make this same program is like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 import Control.Monad(when)
 
@@ -2549,7 +2549,7 @@ mostly act the same as the ones that work on lists. Because the names
 are the same, we're going to do a qualified import in a script and then
 load that script into GHCI to play with bytestrings.
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Data.ByteString.Lazy as B
 import qualified Data.ByteString as S
 ```
@@ -2575,7 +2575,7 @@ class="fixed">Num</span> typeclass. For instance, we know that the value
 numeral type. Well, it can also take the type of <span
 class="fixed">Word8</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> B.pack [99,97,110]
 Chunk "can" Empty
 ghci> B.pack [98..120]
@@ -2602,7 +2602,7 @@ bytestrings and converts it to a lazy bytestring. <span
 class="label function">toChunks</span> takes a lazy bytestring and
 converts it to a list of strict ones.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> B.fromChunks [S.pack [40,41,42], S.pack [43,44,45], S.pack [46,47,48]]
 Chunk "()*" (Chunk "+,-" (Chunk "./0" Empty))
 ```
@@ -2620,7 +2620,7 @@ class="fixed">cons</span>, <span class="label function">cons'</span> if
 you're going to be inserting a lot of bytes at the beginning of a
 bytestring.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> B.cons 85 $ B.pack [80,81,82,84]
 Chunk "U" (Chunk "PQRT" Empty)
 ghci> B.cons' 85 $ B.pack [80,81,82,84]
@@ -2670,7 +2670,7 @@ arguments and copies the first file into the second file. Note that
 called <span class="fixed">copyFile</span>, but we're going to implement
 our own file copying function and program anyway.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import qualified Data.ByteString.Lazy as B
 
@@ -2765,7 +2765,7 @@ explodes in your face if you try to divide by zero and <span
 class="fixed">head</span> throws a tantrum when you give it an empty
 list.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 4 `div` 0
 *** Exception: divide by zero
 ghci> head []
@@ -2809,7 +2809,7 @@ something. Take a look at this program that opens a file whose name is
 given to it as a command line argument and tells us how many lines the
 file has.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.IO
 
@@ -2840,7 +2840,7 @@ exists before trying to open it by using the <span
 class="label function">doesFileExist</span> function from <span
 class="fixed">System.Directory</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.IO
 import System.Directory
@@ -2899,7 +2899,7 @@ class="fixed">IOError</span> as we'll learn in a second.
 
 So let's put our new friend <span class="fixed">catch</span> to use!
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.IO
 import System.IO.Error
@@ -2948,7 +2948,7 @@ we do our stuff. If it's not, we throw that exception back into the
 wild. Let's modify our program to catch only the exceptions caused by a
 file not existing.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.IO
 import System.IO.Error
@@ -3020,7 +3020,7 @@ throwing exceptions yourself with <span class="fixed">userError</span>.
 
 So you could have a handler that looks something like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 handler :: IOError -> IO ()
 handler e
     | isDoesNotExistError e = putStrLn "The file doesn't exist!"
@@ -3057,7 +3057,7 @@ the file path from the <span class="fixed">IOError</span>, if it can.
 Let's modify our program to print out the file path that's responsible
 for the exception occurring.
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Environment
 import System.IO
 import System.IO.Error
@@ -3091,7 +3091,7 @@ your I/O code with <span class="fixed">catch</span> or you can cover
 several of them with <span class="fixed">catch</span> and use different
 handlers for them, like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do toTry `catch` handler1
           thenTryThis `catch` handler2
           launchRockets

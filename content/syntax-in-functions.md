@@ -333,7 +333,7 @@ is less than 18.5, you're considered underweight. If it's anywhere from
 more than 30 is obese. So here's the function (we won't be calculating
 it right now, this function just gets a BMI and tells you off)
 
-``` {.haskell:hs name="code"}
+```haskell
 bmiTell :: (RealFloat a) => a -> String
 bmiTell bmi
     | bmi <= 18.5 = "You're underweight, you emo, you!"
@@ -375,7 +375,7 @@ as we want. Instead of having the user calculate his own BMI before
 calling the function, let's modify this function so that it takes a
 height and weight and calculates it for us.
 
-``` {.haskell:hs name="code"}
+```haskell
 bmiTell :: (RealFloat a) => a -> a -> String
 bmiTell weight height
     | weight / height ^ 2 <= 18.5 = "You're underweight, you emo, you!"
@@ -401,7 +401,7 @@ Another very simple example: let's implement our own <span
 class="fixed">max</span> function. If you remember, it takes two things
 that can be compared and returns the larger of them.
 
-``` {.haskell:hs name="code"}
+```haskell
 max' :: (Ord a) => a -> a -> a
 max' a b
     | a > b     = a
@@ -412,7 +412,7 @@ Guards can also be written inline, although I'd advise against that
 because it's less readable, even for very short functions. But to
 demonstrate, we could write <span class="fixed">max'</span> like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 max' :: (Ord a) => a -> a -> a
 max' a b | a > b = a | otherwise = b
 ```
@@ -420,7 +420,7 @@ max' a b | a > b = a | otherwise = b
 Ugh! Not very readable at all! Moving on: let's implement our own <span
 class="fixed">compare</span> by using guards.
 
-``` {.haskell:hs name="code"}
+```haskell
 myCompare :: (Ord a) => a -> a -> Ordering
 a `myCompare` b
     | a > b     = GT
@@ -428,7 +428,7 @@ a `myCompare` b
     | otherwise = LT
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 3 `myCompare` 2
 GT
 ```
@@ -447,7 +447,7 @@ Where!?
 In the previous section, we defined a BMI calculator function and
 berator like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 bmiTell :: (RealFloat a) => a -> a -> String
 bmiTell weight height
     | weight / height ^ 2 <= 18.5 = "You're underweight, you emo, you!"
@@ -463,7 +463,7 @@ expression three times, it would be ideal if we could calculate it once,
 bind it to a name and then use that name instead of the expression.
 Well, we can modify our function like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 bmiTell :: (RealFloat a) => a -> a -> String
 bmiTell weight height
     | bmi <= 18.5 = "You're underweight, you emo, you!"
@@ -483,7 +483,7 @@ names to things and can make our programs faster since stuff like our
 <span class="fixed">bmi</span> variable here is calculated only once. We
 could go a bit overboard and present our function like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 bmiTell :: (RealFloat a) => a -> a -> String
 bmiTell weight height
     | bmi <= skinny = "You're underweight, you emo, you!"
@@ -510,7 +510,7 @@ shared name, you have to define it globally.
 You can also use where bindings to *pattern match*! We could have
 rewritten the where section of our previous function as:
 
-``` {.haskell:hs name="code"}
+```haskell
     ...
     where bmi = weight / height ^ 2
           (skinny, normal, fat) = (18.5, 25.0, 30.0)
@@ -519,7 +519,7 @@ rewritten the where section of our previous function as:
 Let's make another fairly trivial function where we get a first and a
 last name and give someone back their initials.
 
-``` {.haskell:hs name="code"}
+```haskell
 initials :: String -> String -> String
 initials firstname lastname = [f] ++ ". " ++ [l] ++ "."
     where (f:_) = firstname
@@ -535,7 +535,7 @@ functions. Staying true to our healthy programming theme, let's make a
 function that takes a list of weight-height pairs and returns a list of
 BMIs.
 
-``` {.haskell:hs name="code"}
+```haskell
 calcBmis :: (RealFloat a) => [(a, a)] -> [a]
 calcBmis xs = [bmi w h | (w, h) <- xs]
     where bmi weight height = weight / height ^ 2
@@ -565,7 +565,7 @@ bindings can be used for pattern matching. Let's see them in action!
 This is how we could define a function that gives us a cylinder's
 surface area based on its height and radius:
 
-``` {.haskell:hs name="code"}
+```haskell
 cylinder :: (RealFloat a) => a -> a -> a
 cylinder r h =
     let sideArea = 2 * pi * r * h
@@ -632,7 +632,7 @@ rewrite our previous example of calculating lists of weight-height pairs
 to use a *let* inside a list comprehension instead of defining an
 auxiliary function with a *where*.
 
-``` {.haskell:hs name="code"}
+```haskell
 calcBmis :: (RealFloat a) => [(a, a)] -> [a]
 calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2]
 ```
@@ -644,7 +644,7 @@ output function (the part before the <span class="fixed">|</span>) and
 all predicates and sections that come after of the binding. So we could
 make our function return only the BMIs of fat people:
 
-``` {.haskell:hs name="code"}
+```haskell
 calcBmis :: (RealFloat a) => [(a, a)] -> [a]
 calcBmis xs = [bmi | (w, h) <- xs, let bmi = w / h ^ 2, bmi >= 25.0]
 ```
@@ -699,13 +699,13 @@ yeah, pattern matching on parameters in function definitions! Well,
 that's actually just syntactic sugar for case expressions. These two
 pieces of code do the same thing and are interchangeable:
 
-``` {.haskell:hs name="code"}
+```haskell
 head' :: [a] -> a
 head' [] = error "No head for empty lists!"
 head' (x:_) = x
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 head' :: [a] -> a
 head' xs = case xs of [] -> error "No head for empty lists!"
                       (x:_) -> x
@@ -713,7 +713,7 @@ head' xs = case xs of [] -> error "No head for empty lists!"
 
 As you can see, the syntax for case expressions is pretty simple:
 
-``` {.haskell:hs name="code"}
+```haskell
 case expression of pattern -> result
                    pattern -> result
                    pattern -> result
@@ -729,7 +729,7 @@ Whereas pattern matching on function parameters can only be done when
 defining functions, case expressions can be used pretty much anywhere.
 For instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 describeList :: [a] -> String
 describeList xs = "The list is " ++ case xs of [] -> "empty."
                                                [x] -> "a singleton list."
@@ -741,7 +741,7 @@ an expression. Because pattern matching in function definitions is
 syntactic sugar for case expressions, we could have also defined this
 like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 describeList :: [a] -> String
 describeList xs = "The list is " ++ what xs
     where what [] = "empty."

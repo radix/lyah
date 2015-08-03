@@ -36,7 +36,7 @@ class="fixed">Data.List</span> module, which has a bunch of useful
 functions for working with lists and use a function that it exports to
 create a function that tells us how many unique elements a list has.
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 numUniques :: (Eq a) => [a] -> Int
@@ -77,7 +77,7 @@ selectively import just those functions. If we wanted to import only the
 <span class="fixed">nub</span> and <span class="fixed">sort</span>
 functions from <span class="fixed">Data.List</span>, we'd do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List (nub, sort)
 ```
 
@@ -89,7 +89,7 @@ class="fixed">nub</span> and we want to import all the functions from
 <span class="fixed">Data.List</span> except the <span
 class="fixed">nub</span> function:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List hiding (nub)
 ```
 
@@ -102,7 +102,7 @@ when we import <span class="fixed">Data.Map</span> and then call <span
 class="fixed">filter</span>, Haskell won't know which function to use.
 Here's how we solve this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Data.Map
 ```
 
@@ -115,7 +115,7 @@ typing out <span class="fixed">Data.Map</span> in front of every
 function from that module is kind of tedious. That's why we can rename
 the qualified import to something shorter:
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Data.Map as M
 ```
 
@@ -433,7 +433,7 @@ ghci> let w = "w00t" in zip (inits w) (tails w)
 
 Let's use a fold to implement searching a list for a sublist.
 
-``` {.haskell:hs name="code"}
+```haskell
 search :: (Eq a) => [a] -> [a] -> Bool
 search needle haystack =
     let nlen = length needle
@@ -1074,7 +1074,7 @@ each character in them by a fixed number of positions in the alphabet.
 We can easily create a sort of Caesar cipher of our own, only we won't
 constrict ourselves to the alphabet.
 
-``` {.haskell:hs name="code"}
+```haskell
 encode :: Int -> String -> String
 encode shift msg =
     let ords = map ord msg
@@ -1102,7 +1102,7 @@ ghci> encode 5 "Marry Christmas! Ho ho ho!"
 That's encoded alright. Decoding a message is basically just shifting it
 back by the number of places it was shifted by in the first place.
 
-``` {.haskell:hs name="code"}
+```haskell
 decode :: Int -> String -> String
 decode shift msg = encode (negate shift) msg
 ```
@@ -1131,7 +1131,7 @@ by having a list of pairs. The first component in the pair would be the
 key, the second component the value. Here's an example of an association
 list with phone numbers:
 
-``` {.haskell:hs name="code"}
+```haskell
 phoneBook =
     [("betty","555-2938")
     ,("bonnie","452-2928")
@@ -1147,7 +1147,7 @@ strings. The most common task when dealing with association lists is
 looking up some value by key. Let's make a function that looks up some
 value given a key.
 
-``` {.haskell:hs name="code"}
+```haskell
 findKey :: (Eq k) => k -> [(k,v)] -> v
 findKey key xs = snd . head . filter (\(k,v) -> key == k) $ xs
 ```
@@ -1164,7 +1164,7 @@ return a <span class="fixed">Nothing</span>. If we find it, we'll return
 <span class="fixed">Just something</span>, where something is the value
 corresponding to that key.
 
-``` {.haskell:hs name="code"}
+```haskell
 findKey :: (Eq k) => k -> [(k,v)] -> Maybe v
 findKey key [] = Nothing
 findKey key ((k,v):xs) = if key == k
@@ -1180,7 +1180,7 @@ case, splitting a list into a head and a tail, recursive calls, they're
 all there. This is the classic fold pattern, so let's see how this would
 be implemented as a fold.
 
-``` {.haskell:hs name="code"}
+```haskell
 findKey :: (Eq k) => k -> [(k,v)] -> Maybe v
 findKey key = foldr (\(k,v) acc -> if key == k then Just v else acc) Nothing
 ```
@@ -1222,7 +1222,7 @@ Because <span class="fixed">Data.Map</span> exports functions that clash
 with the <span class="fixed">Prelude</span> and <span
 class="fixed">Data.List</span> ones, we'll do a qualified import.
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Data.Map as Map
 ```
 
@@ -1247,7 +1247,7 @@ If there are duplicate keys in the original association list, the
 duplicates are just discarded. This is the type signature of <span
 class="fixed">fromList</span>
 
-``` {.haskell:hs name="code"}
+```haskell
 Map.fromList :: (Ord k) => [(k, v)] -> Map.Map k v
 ```
 
@@ -1376,7 +1376,7 @@ doesn't discard duplicate keys but it uses a function supplied to it to
 decide what to do with them. Let's say that a girl can have several
 numbers and we have an association list set up like this.
 
-``` {.haskell:hs name="code"}
+```haskell
 phoneBook =
     [("betty","555-2938")
     ,("betty","342-2492")
@@ -1394,12 +1394,12 @@ phoneBook =
 Now if we just use <span class="fixed">fromList</span> to put that into
 a map, we'll lose a few numbers! So here's what we'll do:
 
-``` {.haskell:hs name="code"}
+```haskell
 phoneBookToMap :: (Ord k) => [(k, String)] -> Map.Map k String
 phoneBookToMap xs = Map.fromListWith (\number1 number2 -> number1 ++ ", " ++ number2) xs
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Map.lookup "patsy" $ phoneBookToMap phoneBook
 "827-9162, 943-2929, 493-2928"
 ghci> Map.lookup "wendy" $ phoneBookToMap phoneBook
@@ -1413,7 +1413,7 @@ values of those keys into some other value. We could also first make all
 the values in the association list singleton lists and then we can use
 <span class="fixed">++</span> to combine the numbers.
 
-``` {.haskell:hs name="code"}
+```haskell
 phoneBookToMap :: (Ord k) => [(k, a)] -> Map.Map k [a]
 phoneBookToMap xs = Map.fromListWith (++) $ map (\(k,v) -> (k,[v])) xs
 ```

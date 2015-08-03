@@ -124,7 +124,7 @@ list and that's our final result!
 
 So here's a sketch of that function:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 solveRPN :: (Num a) => String -> a
@@ -150,7 +150,7 @@ class="fixed">[40]</span>. But before that, let's turn our function into
 [point-free style](higher-order-functions#composition) because it has a
 lot of parentheses that are kind of freaking me out:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 solveRPN :: (Num a) => String -> a
@@ -163,7 +163,7 @@ and an item and return a new stack. We'll use pattern matching to get
 the top items of a stack and to pattern match against operators like
 <span class="fixed">"\*"</span> and <span class="fixed">"-"</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 solveRPN :: (Num a, Read a) => String -> a
 solveRPN = head . foldl foldingFunction [] . words
     where   foldingFunction (x:y:ys) "*" = (x * y):ys
@@ -219,7 +219,7 @@ is <span class="fixed">[5]</span>, which is the number that we return.
 
 Let's play around with our function:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> solveRPN "10 4 3 + 2 * -"
 -4
 ghci> solveRPN "2 3 +"
@@ -247,7 +247,7 @@ Let's modify our function to take a few more operators. For simplicity's
 sake, we'll change its type declaration so that it returns a number of
 type <span class="fixed">Float</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 solveRPN :: String -> Float
@@ -269,7 +269,7 @@ the rest of the stack because we only need one element to perform its
 natural logarithm. With the sum operator, we just return a stack that
 has only one element, which is the sum of the stack so far.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> solveRPN "2.7 ln"
 0.9932518
 ghci> solveRPN "10 10 10 10 sum 4 /"
@@ -283,7 +283,7 @@ ghci> solveRPN "10 2 ^"
 Notice that we can include floating point numbers in our expression
 because <span class="fixed">read</span> knows how to read them.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> solveRPN "43.2425 0.5 ^"
 6.575903
 ```
@@ -454,7 +454,7 @@ length of one, we see that every crossroads (or node) points to the node
 on the other side and also to the next one on its side. Except for the
 last nodes, they just point to the other side.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Node = Node Road Road | EndNode Road
 data Road = Road Int Node
 ```
@@ -474,7 +474,7 @@ road parts that point forward. Each node has a road part that point to
 the opposite road, but only those nodes that aren't the end ones have
 road parts that point forward.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Node = Node Road (Maybe Road)
 data Road = Road Int Node
 ```
@@ -495,7 +495,7 @@ easily represented as four sections: <span class="fixed">50, 10,
 It's always good to keep our data types as simple as possible, although
 not any simpler!
 
-``` {.haskell:hs name="code"}
+```haskell
 data Section = Section { getA :: Int, getB :: Int, getC :: Int } deriving (Show)
 type RoadSystem = [Section]
 ```
@@ -525,7 +525,7 @@ vector to a section of a road system.
 Our road system from Heathrow to London can now be represented like
 this:
 
-``` {.haskell:hs name="code"}
+```haskell
 heathrowToLondon :: RoadSystem
 heathrowToLondon = [Section 50 10 30, Section 5 90 20, Section 40 2 25, Section 10 8 0]
 ```
@@ -540,7 +540,7 @@ class="fixed">Label</span> type that's just an enumeration of either
 class="fixed">C</span>. We'll also make a type synonym: <span
 class="fixed">Path</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Label = A | B | C deriving (Show)
 type Path = [(Label, Int)]
 ```
@@ -551,7 +551,7 @@ should thus have a type declaration of <span class="fixed">optimalPath
 class="fixed">heathrowToLondon</span>, it should return the following
 path:
 
-``` {.haskell:hs name="code"}
+```haskell
 [(B,10),(C,30),(A,5),(C,20),(B,2),(B,8)]
 ```
 
@@ -584,7 +584,7 @@ a</span>
 
 </div>
 
-``` {.haskell:hs name="code"}
+```haskell
 roadStep :: (Path, Path) -> Section -> (Path, Path)
 roadStep (pathA, pathB) (Section a b c) =
     let priceA = sum $ map snd pathA
@@ -647,7 +647,7 @@ Let's run this function on the first section of <span
 class="fixed">heathrowToLondon</span>. Because it's the first section,
 the best paths on A and B parameter will be a pair of empty lists.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> roadStep ([], []) (head heathrowToLondon)
 ([(C,30),(B,10)],[(B,10)])
 ```
@@ -678,7 +678,7 @@ sections, we're left with a pair of optimal paths and the shorter of
 them is our answer. With this in mind, we can implement <span
 class="fixed">optimalPath</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 optimalPath :: RoadSystem -> Path
 optimalPath roadSystem =
     let (bestAPath, bestBPath) = foldl roadStep ([],[]) roadSystem
@@ -697,7 +697,7 @@ consing over appending.
 
 Let's test this!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> optimalPath heathrowToLondon
 [(B,10),(C,30),(A,5),(C,20),(B,2),(B,8),(C,0)]
 ```
@@ -720,7 +720,7 @@ class="fixed">groupsOf</span>. For a parameter of <span
 class="fixed">[1..10]</span>, <span class="fixed">groupsOf 3</span>
 should return <span class="fixed">[[1,2,3],[4,5,6],[7,8,9],[10]]</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 groupsOf :: Int -> [a] -> [[a]]
 groupsOf 0 _ = undefined
 groupsOf _ [] = []
@@ -736,7 +736,7 @@ class="fixed">main</span> function, which reads from the standard input,
 makes a <span class="fixed">RoadSystem</span> out of it and prints out
 the shortest path:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 main = do

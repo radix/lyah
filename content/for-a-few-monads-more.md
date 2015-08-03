@@ -49,7 +49,7 @@ explain what's going on, probably for debugging purposes. Consider a
 function that takes a number of bandits in a gang and tells us if that's
 a big gang or not. That's a very simple function:
 
-``` {.haskell:hs name="code"}
+```haskell
 isBigGang :: Int -> Bool
 isBigGang x = x > 9
 ```
@@ -59,7 +59,7 @@ or <span class="fixed">False</span> value, we want it to also return a
 log string that says what it did? Well, we just make that string and
 return it along side our <span class="fixed">Bool</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 isBigGang :: Int -> (Bool, String)
 isBigGang x = (x > 9, "Compared gang size to 9.")
 ```
@@ -70,7 +70,7 @@ value and the second component is the string that accompanies that
 value. There's some added context to our value now. Let's give this a
 go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> isBigGang 3
 (False,"Compared gang size to 9.")
 ghci> isBigGang 30
@@ -116,7 +116,7 @@ original value isn't lost, but is joined together with the log of the
 value that results from the function. Here's the implementation of <span
 class="fixed">applyLog</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 applyLog :: (a,String) -> (a -> (b,String)) -> (b,String)
 applyLog (x,log) f = let (y,newLog) = f x in (y,log ++ newLog)
 ```
@@ -141,7 +141,7 @@ log to the old one.
 
 Here's <span class="fixed">applyLog</span> in action:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (3, "Smallish gang.") `applyLog` isBigGang
 (False,"Smallish gang.Compared gang size to 9")
 ghci> (30, "A freaking platoon.") `applyLog` isBigGang
@@ -153,7 +153,7 @@ gang had its accompanying log and it got included in the result log.
 Here are a few more examples of using <span
 class="fixed">applyLog</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> ("Tobin","Got outlaw name.") `applyLog` (\x -> (length x, "Applied length."))
 (5,"Got outlaw name.Applied length.")
 ghci> ("Bathcat","Got outlaw name.") `applyLog` (\x -> (length x, "Applied length"))
@@ -181,7 +181,7 @@ class="fixed">++</span> to append the logs, so wouldn't this work on any
 kind of list, not just a list of characters? Sure it would. We can go
 ahead and change its type to this:
 
-``` {.haskell:hs name="code"}
+```haskell
 applyLog :: (a,[c]) -> (a -> (b,[c])) -> (b,[c])
 ```
 
@@ -199,7 +199,7 @@ class, which means that they implement the <span
 class="fixed">mappend</span> function. And for both lists and
 bytestrings, <span class="fixed">mappend</span> is for appending. Watch:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [1,2,3] `mappend` [4,5,6]
 [1,2,3,4,5,6]
 ghci> B.pack [99,104,105] `mappend` B.pack [104,117,97,104,117,97]
@@ -211,7 +211,7 @@ monoid. We have to change the type to reflect this, as well as the
 implementation, because we have to change <span class="fixed">++</span>
 to <span class="fixed">mappend</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 applyLog :: (Monoid m) => (a,m) -> (a -> (b,m)) -> (b,m)
 applyLog (x,log) f = let (y,newLog) = f x in (y,log `mappend` newLog)
 ```
@@ -224,7 +224,7 @@ value. We just use the <span class="fixed">Sum</span> newtype to make
 sure that the prices get added as we operate with the items. Here's a
 function that adds drink to some cowboy food:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Monoid
 
 type Food = String
@@ -243,7 +243,7 @@ reminder, doing <span class="fixed">mappend</span> with <span
 class="fixed">Sum</span> results in the wrapped values getting added
 together:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Sum 3 `mappend` Sum 9
 Sum {getSum = 12}
 ```
@@ -257,7 +257,7 @@ function to a food wouldn't be terribly interesting right now, but using
 <span class="fixed">applyLog</span> to feed a food that comes with a
 price itself into this function is interesting:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> ("beans", Sum 10) `applyLog` addDrink
 ("milk",Sum {getSum = 35})
 ghci> ("jerky", Sum 25) `applyLog` addDrink
@@ -280,7 +280,7 @@ result to <span class="fixed">addDrink</span> again, so that it tells us
 what we should drink along with our drink and how much that will cost
 us. Let's give it a shot:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> ("dogmeat", Sum 5) `applyLog` addDrink `applyLog` addDrink
 ("beer",Sum {getSum = 65})
 ```
@@ -307,7 +307,7 @@ class="fixed">Writer w a</span> type is just a <span
 class="fixed">newtype</span> wrapper for this. Its definition is very
 simple:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype Writer w a = Writer { runWriter :: (a, w) }
 ```
 
@@ -320,7 +320,7 @@ value.
 
 Its <span class="fixed">Monad</span> instance is defined like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance (Monoid w) => Monad (Writer w) where
     return x = Writer (x, mempty)
     (Writer (x,v)) >>= f = let (Writer (y, v')) = f x in Writer (y, v `mappend` v')
@@ -362,7 +362,7 @@ resulting monoid value will be only what the function returns. Let's use
 class="fixed">3</span> a bunch of times, only we'll pair it with a
 different monoid every time:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runWriter (return 3 :: Writer String Int)
 (3,"")
 ghci> runWriter (return 3 :: Writer (Sum Int) Int)
@@ -399,7 +399,7 @@ reflected in the final result. Here's a simple example of using <span
 class="fixed">do</span> notation with <span class="fixed">Writer</span>
 to multiply two numbers:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.Writer
 
 logNumber :: Int -> Writer [String] Int
@@ -424,7 +424,7 @@ as the result. Because <span class="fixed">return</span> just takes
 something and puts it in a minimal context, we can be sure that it won't
 add anything to the log. Here's what we see if we run this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runWriter multWithLog
 (15,["Got number: 3","Got number: 5"])
 ```
@@ -441,7 +441,7 @@ desired monoid value attached. When we have a monadic value that has
 variable. Here's <span class="fixed">multWithLog</span> but with some
 extra reporting included:
 
-``` {.haskell:hs name="code"}
+```haskell
 multWithLog :: Writer [String] Int
 multWithLog = do
     a <- logNumber 3
@@ -460,7 +460,7 @@ class="fixed">do</span> expression. We'd lose the result of the
 multiplication. However, the log would be the same. Here is this in
 action:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runWriter multWithLog
 (15,["Got number: 3","Got number: 5","Gonna multiply these two"])
 ```
@@ -474,7 +474,7 @@ class="fixed">gcd</span> function, which does exactly this, but let's
 implement our own and then equip it with logging capabilities. Here's
 the normal algorithm:
 
-``` {.haskell:hs name="code"}
+```haskell
 gcd' :: Int -> Int -> Int
 gcd' a b
     | b == 0    = a
@@ -494,7 +494,7 @@ so we run the algorithm again for 1 and 0, as dividing 2 by 1 gives us a
 remainder of 0. And finally, because the second number is now 0, the
 final result is 1. Let's see if our code agrees:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> gcd' 8 3
 1
 ```
@@ -504,14 +504,14 @@ the context will be a monoid value that acts as a log. Like before,
 we'll use a list of strings as our monoid. So the type of our new <span
 class="fixed">gcd'</span> function should be:
 
-``` {.haskell:hs name="code"}
+```haskell
 gcd' :: Int -> Int -> Writer [String] Int
 ```
 
 All that's left now is to equip our function with log values. Here's the
 code:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.Writer
 
 gcd' :: Int -> Int -> Writer [String] Int
@@ -537,7 +537,7 @@ class="fixed">a</span> as the result of the <span
 class="fixed">do</span> expression. Instead of this <span
 class="fixed">do</span> expression, we could have also written this:
 
-``` {.haskell:hs name="code"}
+```haskell
 Writer (a, ["Finished with " ++ show a])
 ```
 
@@ -564,7 +564,7 @@ Let's try our new <span class="fixed">gcd'</span> out. Its result is a
 that from its <span class="fixed">newtype</span>, we get a tuple. The
 first part of the tuple is the result. Let's see if it's okay:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fst $ runWriter (gcd' 8 3)
 1
 ```
@@ -573,7 +573,7 @@ Good! Now what about the log? Because the log is a list of strings,
 let's use <span class="fixed">mapM\_ putStrLn</span> to print those
 strings to the screen:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn $ snd $ runWriter (gcd' 8 3)
 8 mod 3 = 2
 3 mod 2 = 1
@@ -603,7 +603,7 @@ that list is really long.
 In our <span class="fixed">gcd'</span> function, the logging is fast
 because the list appending ends up looking like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 a ++ (b ++ (c ++ (d ++ (e ++ f))))
 ```
 
@@ -613,7 +613,7 @@ list and only then add a longer list on the right. But if we're not
 careful, using the <span class="fixed">Writer</span> monad can produce
 list appending that looks like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ((((a ++ b) ++ c) ++ d) ++ e) ++ f
 ```
 
@@ -625,7 +625,7 @@ The following function works like <span class="fixed">gcd'</span>, only
 it logs stuff in reverse. First it produces the log for the rest of the
 procedure and then adds the current step to the end of the log.
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.Writer
 
 gcdReverse :: Int -> Int -> Writer [String] Int
@@ -645,7 +645,7 @@ but the current step goes at the end of the log that was produced by the
 recursion. Finally, it presents the result of the recursion as the final
 result. Here it is in action:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn $ snd $ runWriter (gcdReverse 8 3)
 Finished with 1
 2 mod 1 = 0
@@ -678,7 +678,7 @@ other one there. But what if we take the difference list approach and
 represent our lists as functions? Well then, appending two difference
 lists can be done like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 f `append` g = \xs -> f (g xs)
 ```
 
@@ -691,7 +691,7 @@ class="fixed">g</span> the function <span
 class="fixed">("meat"++)</span>, then <span class="fixed">f \`append\`
 g</span> makes a new function that's equivalent to the following:
 
-``` {.haskell:hs name="code"}
+```haskell
 \xs -> "dog" ++ ("meat" ++ xs)
 ```
 
@@ -701,7 +701,7 @@ first applies one difference list some list and then the other.
 Let's make a <span class="fixed">newtype</span> wrapper for difference
 lists so that we can easily give them monoid instances:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype DiffList a = DiffList { getDiffList :: [a] -> [a] }
 ```
 
@@ -710,7 +710,7 @@ a difference list is just a function that takes a list and returns
 another. Converting normal lists to difference lists and vice versa is
 easy:
 
-``` {.haskell:hs name="code"}
+```haskell
 toDiffList :: [a] -> DiffList a
 toDiffList xs = DiffList (xs++)
 
@@ -725,7 +725,7 @@ if we just want that something, we apply the function to an empty list!
 
 Here's the <span class="fixed">Monoid</span> instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid (DiffList a) where
     mempty = DiffList (\xs -> [] ++ xs)
     (DiffList f) `mappend` (DiffList g) = DiffList (\xs -> f (g xs))
@@ -736,7 +736,7 @@ Notice how for lists, <span class="fixed">mempty</span> is just the
 class="fixed">mappend</span> is actually just function composition.
 Let's see if this works:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fromDiffList (toDiffList [1,2,3,4] `mappend` toDiffList [1,2,3])
 [1,2,3,4,1,2,3]
 ```
@@ -745,7 +745,7 @@ Tip top! Now we can increase the efficiency of our <span
 class="fixed">gcdReverse</span> function by making it use difference
 lists instead of normal lists:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.Writer
 
 gcd' :: Int -> Int -> Writer (DiffList String) Int
@@ -766,7 +766,7 @@ convert our normal lists into difference lists with <span
 class="fixed">toDiffList</span>. Let's see if the log gets assembled
 properly:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn . fromDiffList . snd . runWriter $ gcdReverse 110 34
 Finished with 2
 8 mod 2 = 0
@@ -789,7 +789,7 @@ number to zero, but produces its log in reverse, like <span
 class="fixed">gcdReverse</span>, so that the numbers in the log will
 actually be counted up:
 
-``` {.haskell:hs name="code"}
+```haskell
 finalCountDown :: Int -> Writer (DiffList String) ()
 finalCountDown 0 = do
     tell (toDiffList ["0"])
@@ -809,7 +809,7 @@ Anyway, if you load this function in GHCi and apply it to a big number,
 like <span class="fixed">500000</span>, you'll see that it quickly
 starts counting from <span class="fixed">0</span> onwards:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn . fromDiffList . snd . runWriter $ finalCountDown 500000
 0
 1
@@ -820,7 +820,7 @@ ghci> mapM_ putStrLn . fromDiffList . snd . runWriter $ finalCountDown 500000
 However, if we change it to use normal lists instead of difference
 lists, like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 finalCountDown :: Int -> Writer [String] ()
 finalCountDown 0 = do
     tell ["0"]
@@ -831,7 +831,7 @@ finalCountDown x = do
 
 And then tell GHCi to start counting:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn . snd . runWriter $ finalCountDown 500000
 ```
 
@@ -861,7 +861,7 @@ we're making a new function that's like <span class="fixed">g</span>,
 only before returning its result, <span class="fixed">f</span> gets
 applied to that result as well. For instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let f = (*5)
 ghci> let g = (+3)
 ghci> (fmap f g) 8
@@ -872,7 +872,7 @@ We've also seen that functions are applicative functors. They allow us
 to operate on the eventual results of functions as if we already had
 their results. Here's an example:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let f = (+) <$> (*2) <*> (+10)
 ghci> f 3
 19
@@ -902,7 +902,7 @@ class="fixed">Monad</span> instance looks like. It's located in <span
 class="fixed">Control.Monad.Instances</span> and it goes a little
 something like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monad ((->) r) where
     return x = \_ -> x
     h >>= f = \w -> f (h w) w
@@ -936,7 +936,7 @@ don't worry, because with examples we'll see how this is a really simple
 monad. Here's a <span class="fixed">do</span> expression that utilizes
 this monad:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.Instances
 
 addStuff :: Int -> Int
@@ -960,7 +960,7 @@ other effect but to make a monadic value that presents some result. This
 presents <span class="fixed">a+b</span> as the result of this function.
 If we test it out, we get the same result as before:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> addStuff 3
 19
 ```
@@ -974,7 +974,7 @@ monad is also called the reader monad. All the functions read from a
 common source. To illustrate this even better, we can rewrite <span
 class="fixed">addStuff</span> like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 addStuff :: Int -> Int
 addStuff x = let
     a = (*2) x
@@ -1016,7 +1016,7 @@ generator that a previous function returned along with its result. When
 making a function that takes a <span class="fixed">StdGen</span> and
 tosses a coin three times based on that generator, we had to do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 threeCoins :: StdGen -> (Bool, Bool, Bool)
 threeCoins gen =
     let (firstCoin, newGen) = random gen
@@ -1046,7 +1046,7 @@ let's go ahead and give them a type. We'll say that a stateful
 computation is a function that takes some state and returns a value
 along with some new state. That function would have the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 s -> (a,s)
 ```
 
@@ -1094,7 +1094,7 @@ an item and a stack and then push that item onto the stack. It will
 return <span class="fixed">()</span> as its result, along with a new
 stack. Here goes:
 
-``` {.haskell:hs name="code"}
+```haskell
 type Stack = [Int]
 
 pop :: Stack -> (Int,Stack)
@@ -1115,7 +1115,7 @@ Let's write a small piece of code to simulate a stack using these
 functions. We'll take a stack, push <span class="fixed">3</span> to it
 and then pop two items, just for kicks. Here it is:
 
-``` {.haskell:hs name="code"}
+```haskell
 stackManip :: Stack -> (Int, Stack)
 stackManip stack = let
     ((),newStack1) = push 3 stack
@@ -1135,7 +1135,7 @@ class="fixed">newStack2</span> and we get a number that's <span
 class="fixed">b</span> and a <span class="fixed">newStack3</span>. We
 return a tuple with that number and that stack. Let's try it out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> stackManip [5,8,2,1]
 (5,[8,2,1])
 ```
@@ -1152,7 +1152,7 @@ computation and storing it and then giving it to the next one. Wouldn't
 it be cooler if, instead of giving the stack manually to each function,
 we could write something like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 stackManip = do
     push 3
     a <- pop
@@ -1169,7 +1169,7 @@ The <span class="fixed">Control.Monad.State</span> module provides a
 <span class="fixed">newtype</span> that wraps stateful computations.
 Here's its definition:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype State s a = State { runState :: s -> (a,s) }
 ```
 
@@ -1181,7 +1181,7 @@ Now that we've seen what stateful computations are about and how they
 can even be thought of as values with contexts, let's check out their
 <span class="fixed">Monad</span> instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monad (State s) where
     return x = State $ \s -> (x,s)
     (State h) >>= f = State $ \s -> let (a, newState) = h s
@@ -1232,7 +1232,7 @@ class="fixed">pop</span> and <span class="fixed">push</span> are already
 stateful computations, it's easy to wrap them into a <span
 class="fixed">State</span> wrapper. Watch:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.State
 
 pop :: State Stack Int
@@ -1248,7 +1248,7 @@ and returns a stateful computation. Now we can rewrite our previous
 example of pushing <span class="fixed">3</span> onto the stack and then
 popping two numbers off like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Control.Monad.State
 
 stackManip :: State Stack Int
@@ -1262,7 +1262,7 @@ See how we've glued a push and two pops into one stateful computation?
 When we unwrap it from its <span class="fixed">newtype</span> wrapper we
 get a function to which we can provide some initial state:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runState stackManip [5,8,2,1]
 (5,[8,2,1])
 ```
@@ -1271,7 +1271,7 @@ We didn't have to bind the second <span class="fixed">pop</span> to
 <span class="fixed">a</span> because we didn't use that <span
 class="fixed">a</span> at all. So we could have written it like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 stackManip :: State Stack Int
 stackManip = do
     push 3
@@ -1285,7 +1285,7 @@ put it back onto the stack and stop but if it isn't <span
 class="fixed">5</span>, we push <span class="fixed">3</span> and <span
 class="fixed">8</span> back on? Well, here's the code:
 
-``` {.haskell:hs name="code"}
+```haskell
 stackStuff :: State Stack ()
 stackStuff = do
     a <- pop
@@ -1298,7 +1298,7 @@ stackStuff = do
 
 This is quite straightforward. Let's run it with an initial stack.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runState stackStuff [9,0,2,1,0]
 ((),[8,3,0,2,1,0])
 ```
@@ -1310,7 +1310,7 @@ Because <span class="fixed">stackManip</span> and <span
 class="fixed">stackStuff</span> are ordinary stateful computations, we
 can glue them together to produce further stateful computations.
 
-``` {.haskell:hs name="code"}
+```haskell
 moreStack :: State Stack ()
 moreStack = do
     a <- stackManip
@@ -1332,7 +1332,7 @@ class="fixed">get</span> and <span class="fixed">put</span>. For <span
 class="fixed">State</span>, the <span class="fixed">get</span> function
 is implemented like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 get = State $ \s -> (s,s)
 ```
 
@@ -1340,14 +1340,14 @@ So it just takes the current state and presents it as the result. The
 <span class="fixed">put</span> function takes some state and makes a
 stateful function that replaces the current state with it:
 
-``` {.haskell:hs name="code"}
+```haskell
 put newState = State $ \s -> ((),newState)
 ```
 
 So with these, we can see what the current stack is or we can replace it
 with a whole other stack. Like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 stackyStack :: State Stack ()
 stackyStack = do
     stackNow <- get
@@ -1359,7 +1359,7 @@ stackyStack = do
 It's worth examining what the type of <span class="fixed">\>\>=</span>
 would be if it only worked for <span class="fixed">State</span> values:
 
-``` {.haskell:hs name="code"}
+```haskell
 (>>=) :: State s a -> (a -> State s b) -> State s b
 ```
 
@@ -1371,7 +1371,7 @@ different types but the type of the state has to stay the same. Now why
 is that? Well, for instance, for <span class="fixed">Maybe</span>, <span
 class="fixed">\>\>=</span> has this type:
 
-``` {.haskell:hs name="code"}
+```haskell
 (>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
 ```
 
@@ -1393,7 +1393,7 @@ number. The state monad makes dealing with this a lot easier.
 The <span class="fixed">random</span> function from <span
 class="fixed">System.Random</span> has the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 random :: (RandomGen g, Random a) => g -> (a, g)
 ```
 
@@ -1403,7 +1403,7 @@ can wrap it in the <span class="fixed">State</span> <span
 class="fixed">newtype</span> constructor and then use it as a monadic
 value so that passing of the state gets handled for us:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 import Control.Monad.State
 
@@ -1415,7 +1415,7 @@ So now if we want to throw three coins (<span class="fixed">True</span>
 is tails, <span class="fixed">False</span> is heads) we just do the
 following:
 
-``` {.haskell:hs name="code"}
+```haskell
 import System.Random
 import Control.Monad.State
 
@@ -1435,7 +1435,7 @@ class="fixed">return (a,b,c)</span> to present <span
 class="fixed">(a,b,c)</span> as the result without changing the most
 recent generator. Let's give this a go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runState threeCoins (mkStdGen 33)
 ((True,False,True),680029187 2103410263)
 ```
@@ -1463,7 +1463,7 @@ class="fixed">Right</span> value, signifying the right answer and a
 success, or it can be a <span class="fixed">Left</span> value,
 signifying failure. For instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t Right 4
 Right 4 :: (Num t) => Either a t
 ghci> :t Left "out of cheese error"
@@ -1479,7 +1479,7 @@ Its <span class="fixed">Monad</span> instance is similar to that of
 <span class="fixed">Maybe</span> and it can be found in <span
 class="fixed">Control.Monad.Error</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance (Error e) => Monad (Either e) where
     return x = Right x
     Right x >>= f = f x
@@ -1517,7 +1517,7 @@ is, well, the <span class="fixed">String</span> type! In the case of
 <span class="fixed">String</span>, the <span class="fixed">strMsg</span>
 function just returns the string that it got:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t strMsg
 strMsg :: (Error a) => String -> a
 ghci> strMsg "boom!" :: String
@@ -1532,7 +1532,7 @@ value is used to signify this failure.
 
 Anyway, here are a few examples of usage:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Left "boom" >>= \x -> return (x+1)
 Left "boom"
 ghci> Right 100 >>= \x -> Left "no way!"
@@ -1550,7 +1550,7 @@ When we try to feed a <span class="fixed">Right</span> value to a
 function that also succeeds, we're tripped up by a peculiar type error!
 Hmmm.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Right 3 >>= \x -> return (x + 100)
 
 <interactive>:1:0:
@@ -1569,7 +1569,7 @@ class="fixed">Monad</span> instance. So if you get type errors like this
 one when using <span class="fixed">Either</span> as a monad, just add an
 explicit type signature:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Right 3 >>= \x -> return (x + 100) :: Either String Int
 Right 103
 ```
@@ -1626,13 +1626,13 @@ it over the monadic value. So it's pretty much the same thing as <span
 class="fixed">fmap</span>! This is <span class="fixed">liftM</span>'s
 type:
 
-``` {.haskell:hs name="code"}
+```haskell
 liftM :: (Monad m) => (a -> b) -> m a -> m b
 ```
 
 And this is the type of <span class="fixed">fmap</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 fmap :: (Functor f) => (a -> b) -> f a -> f b
 ```
 
@@ -1645,7 +1645,7 @@ same thing, only one has an <span class="fixed">Applicative</span> class
 constraint whereas the other has a <span class="fixed">Monad</span> one.
 Let's try <span class="fixed">liftM</span> out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> liftM (*3) (Just 8)
 Just 24
 ghci> fmap (*3) (Just 8)
@@ -1674,14 +1674,14 @@ class="fixed">(1,[2,3,4])</span>.
 
 This is how <span class="fixed">liftM</span> is implemented:
 
-``` {.haskell:hs name="code"}
+```haskell
 liftM :: (Monad m) => (a -> b) -> m a -> m b
 liftM f m = m >>= (\x -> return (f x))
 ```
 
 Or with <span class="fixed">do</span> notation:
 
-``` {.haskell:hs name="code"}
+```haskell
 liftM :: (Monad m) => (a -> b) -> m a -> m b
 liftM f m = do
     x <- m
@@ -1704,7 +1704,7 @@ The <span class="fixed">Applicative</span> type class allows us to apply
 functions between values with contexts as if they were normal values.
 Like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (+) <$> Just 3 <*> Just 5
 Just 8
 ghci> (+) <$> Just 3 <*> Nothing
@@ -1716,7 +1716,7 @@ class="fixed">\<\$\></span> is just <span class="fixed">fmap</span> and
 <span class="fixed">\<\*\></span> is a function from the <span
 class="fixed">Applicative</span> type class that has the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 (<*>) :: (Applicative f) => f (a -> b) -> f a -> f b
 ```
 
@@ -1736,7 +1736,7 @@ class="fixed">\<\*\></span>, only it has a <span
 class="fixed">Monad</span> constraint instead of an <span
 class="fixed">Applicative</span> one. Here's its definition:
 
-``` {.haskell:hs name="code"}
+```haskell
 ap :: (Monad m) => m (a -> b) -> m a -> m b
 ap mf m = do
     f <- mf
@@ -1751,7 +1751,7 @@ class="fixed">f</span>, then get the value and call that <span
 class="fixed">x</span> and then finally apply the function to the value
 and present that as a result. Here's a quick demonstration:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just (+3) <*> Just 4
 Just 7
 ghci> Just (+3) `ap` Just 4
@@ -1779,7 +1779,7 @@ The <span class="fixed">liftA2</span> function is a convenience function
 for applying a function between two applicative values. It's defined
 simply like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
 liftA2 f x y = f <$> x <*> y
 ```
@@ -1806,7 +1806,7 @@ monadic value can be flattened and that this is actually a property
 unique to monads. For this, the <span class="fixed">join</span> function
 exists. Its type is this:
 
-``` {.haskell:hs name="code"}
+```haskell
 join :: (Monad m) => m (m a) -> m a
 ```
 
@@ -1814,7 +1814,7 @@ So it takes a monadic value within a monadic value and gives us just a
 monadic value, so it sort of flattens it. Here it is with some <span
 class="fixed">Maybe</span> values:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> join (Just (Just 9))
 Just 9
 ghci> join (Just Nothing)
@@ -1839,7 +1839,7 @@ is a failure as well.
 
 Flattening lists is pretty intuitive:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> join [[1,2,3],[4,5,6]]
 [1,2,3,4,5,6]
 ```
@@ -1850,7 +1850,7 @@ class="fixed">Writer</span> value whose result is a <span
 class="fixed">Writer</span> value itself, we have to <span
 class="fixed">mappend</span> the monoid value.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runWriter $ join (Writer (Writer (1,"aaa"),"bbb"))
 (1,"bbbaaa")
 ```
@@ -1864,7 +1864,7 @@ to the log first and only then can you examine what it has inside.
 Flattening <span class="fixed">Either</span> values is very similar to
 flattening <span class="fixed">Maybe</span> values:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> join (Right (Right 9)) :: Either String Int
 Right 9
 ghci> join (Right (Left "error")) :: Either String Int
@@ -1878,7 +1878,7 @@ whose result is a stateful computation, the result is a stateful
 computation that first runs the outer stateful computation and then the
 resulting one. Watch:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> runState (join (State $ \s -> (push 10,1:2:s))) [0,0,0]
 ((),[10,1,2,0,0,0])
 ```
@@ -1893,7 +1893,7 @@ pushing a <span class="fixed">10</span> on to the top.
 
 The implementation for <span class="fixed">join</span> is as follows:
 
-``` {.haskell:hs name="code"}
+```haskell
 join :: (Monad m) => m (m a) -> m a
 join mm = do
     m <- mm
@@ -1911,7 +1911,7 @@ both <span class="fixed">Just</span> values. Here's what this would look
 like if the <span class="fixed">mm</span> value was set in advance to
 <span class="fixed">Just (Just 8)</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 joinedMaybes :: Maybe Int
 joinedMaybes = do
     m <- Just (Just 8)
@@ -1949,7 +1949,7 @@ butter). It takes a predicate and a list to filter out and then returns
 a new list where only the elements that satisfy the predicate are kept.
 Its type is this:
 
-``` {.haskell:hs name="code"}
+```haskell
 filter :: (a -> Bool) -> [a] -> [a]
 ```
 
@@ -1973,7 +1973,7 @@ The <span class="fixed">filterM</span> function from <span
 class="fixed">Control.Monad</span> does just what we want! Its type is
 this:
 
-``` {.haskell:hs name="code"}
+```haskell
 filterM :: (Monad m) => (a -> m Bool) -> [a] -> m [a]
 ```
 
@@ -1987,7 +1987,7 @@ Let's take a list and only keep those values that are smaller than 4. To
 start, we'll just use the regular <span class="fixed">filter</span>
 function:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> filter (\x -> x < 4) [9,1,5,2,10,3]
 [1,2,3]
 ```
@@ -1998,7 +1998,7 @@ class="fixed">False</span> result, also provides a log of what it did.
 Of course, we'll be using the <span class="fixed">Writer</span> monad
 for this:
 
-``` {.haskell:hs name="code"}
+```haskell
 keepSmall :: Int -> Writer [String] Bool
 keepSmall x
     | x < 4 = do
@@ -2020,7 +2020,7 @@ list. Because the predicate returns a <span class="fixed">Writer</span>
 value, the resulting list will also be a <span
 class="fixed">Writer</span> value.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fst $ runWriter $ filterM keepSmall [9,1,5,2,10,3]
 [1,2,3]
 ```
@@ -2029,7 +2029,7 @@ Examining the result of the resulting <span class="fixed">Writer</span>
 value, we see that everything is in order. Now, let's print the log and
 see what we got:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> mapM_ putStrLn $ snd $ runWriter $ filterM keepSmall [9,1,5,2,10,3]
 9 is too large, throwing it away
 Keeping 1
@@ -2049,7 +2049,7 @@ powerset of some set is a set of all subsets of that set. So if we have
 a set like <span class="fixed">[1,2,3]</span>, its powerset would
 include the following sets:
 
-``` {.haskell:hs name="code"}
+```haskell
 [1,2,3]
 [1,2]
 [1,3]
@@ -2074,7 +2074,7 @@ filter a list and we'll use a predicate that non-deterministically both
 keeps and drops every element from the list. Here's our <span
 class="fixed">powerset</span> function:
 
-``` {.haskell:hs name="code"}
+```haskell
 powerset :: [a] -> [[a]]
 powerset xs = filterM (\x -> [True, False]) xs
 ```
@@ -2084,7 +2084,7 @@ regardless of what that element is. We have a non-deterministic
 predicate, so the resulting list will also be a non-deterministic value
 and will thus be a list of lists. Let's give this a go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> powerset [1,2,3]
 [[1,2,3],[1,2],[1,3],[1],[2,3],[2],[3],[]]
 ```
@@ -2105,13 +2105,13 @@ binary function that produces a monadic value and folds the list up with
 that. Unsurprisingly, the resulting value is also monadic. The type of
 <span class="fixed">foldl</span> is this:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldl :: (a -> b -> a) -> a -> [b] -> a
 ```
 
 Whereas <span class="fixed">foldM</span> has the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldM :: (Monad m) => (a -> b -> m a) -> a -> [b] -> m a
 ```
 
@@ -2119,7 +2119,7 @@ The value that the binary function returns is monadic and so the result
 of the whole fold is monadic as well. Let's sum a list of numbers with a
 fold:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> foldl (\acc x -> acc + x) 0 [2,8,3,1]
 14
 ```
@@ -2141,7 +2141,7 @@ failure, let's make our binary function return a <span
 class="fixed">Maybe</span> accumulator instead of a normal one. Here's
 the binary function:
 
-``` {.haskell:hs name="code"}
+```haskell
 binSmalls :: Int -> Int -> Maybe Int
 binSmalls acc x
     | x > 9     = Nothing
@@ -2152,7 +2152,7 @@ Because our binary function is now a monadic function, we can't use it
 with the normal <span class="fixed">foldl</span>, but we have to use
 <span class="fixed">foldM</span>. Here goes:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> foldM binSmalls 0 [2,8,3,1]
 Just 14
 ghci> foldM binSmalls 0 [2,11,3,1]
@@ -2186,7 +2186,7 @@ divide them and such.
 
 This was the main body of our function:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 solveRPN :: String -> Double
@@ -2198,7 +2198,7 @@ folding function and then when we were left with just one item in the
 stack, we returned that item as the answer. This was the folding
 function:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldingFunction :: [Double] -> String -> [Double]
 foldingFunction (x:y:ys) "*" = (x * y):ys
 foldingFunction (x:y:ys) "+" = (x + y):ys
@@ -2218,7 +2218,7 @@ old one, except with that number pushed to the top.
 Let's first make our folding function capable of graceful failure. Its
 type is going to change from what it is now to this:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldingFunction :: [Double] -> String -> Maybe [Double]
 ```
 
@@ -2234,7 +2234,7 @@ to say that it always has to consume the full input to work and make it
 into a <span class="fixed">readMaybe</span> function for convenience.
 Here it is:
 
-``` {.haskell:hs name="code"}
+```haskell
 readMaybe :: (Read a) => String -> Maybe a
 readMaybe st = case reads st of [(x,"")] -> Just x
                                 _ -> Nothing
@@ -2242,7 +2242,7 @@ readMaybe st = case reads st of [(x,"")] -> Just x
 
 Testing it out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> readMaybe "1" :: Maybe Int
 Just 1
 ghci> readMaybe "GO TO HELL" :: Maybe Int
@@ -2252,7 +2252,7 @@ Nothing
 Okay, it seems to work. So, let's make our folding function into a
 monadic function that can fail:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldingFunction :: [Double] -> String -> Maybe [Double]
 foldingFunction (x:y:ys) "*" = return ((x * y):ys)
 foldingFunction (x:y:ys) "+" = return ((x + y):ys)
@@ -2274,7 +2274,7 @@ numberString</span> results in a <span class="fixed">Nothing</span> then
 the result is <span class="fixed">Nothing</span>. Let's try out the
 folding function by itself:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> foldingFunction [3,2] "*"
 Just [6.0]
 ghci> foldingFunction [3,2] "-"
@@ -2290,7 +2290,7 @@ Nothing
 It looks like it's working! And now it's time for the new and improved
 <span class="fixed">solveRPN</span>. Here it is ladies and gents!
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 solveRPN :: String -> Maybe Double
@@ -2320,7 +2320,7 @@ class="fixed">Maybe</span> value.
 
 Let's give it a shot:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> solveRPN "1 2 * 4 +"
 Just 6.0
 ghci> solveRPN "1 2 * 4 + 5 *"
@@ -2345,7 +2345,7 @@ instead of working for normal functions like <span class="fixed">a -\>
 b</span>, it works for monadic functions like <span class="fixed">a -\>
 m b</span>. For instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let f = (+1) . (*100)
 ghci> f 4
 401
@@ -2364,7 +2364,7 @@ into one big function by just using <span class="fixed">id</span> as the
 starting accumulator and the <span class="fixed">.</span> function as
 the binary function. Here's an example:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let f = foldr (.) id [(+1),(*100),(+1)]
 ghci> f 1
 201
@@ -2390,14 +2390,14 @@ board and returned all the possible moves that he can make next. Then,
 to generate all the possible positions that he can have after taking
 three moves, we made the following function:
 
-``` {.haskell:hs name="code"}
+```haskell
 in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 ```
 
 And to check if he can go from <span class="fixed">start</span> to <span
 class="fixed">end</span> in three moves, we did the following:
 
-``` {.haskell:hs name="code"}
+```haskell
 canReachIn3 :: KnightPos -> KnightPos -> Bool
 canReachIn3 start end = end `elem` in3 start
 ```
@@ -2411,7 +2411,7 @@ class="fixed">moveKnight</span> three times and each time we used <span
 class="fixed">\>\>=</span> to feed it all the possible previous
 positions. So now, let's make it more general. Here's how to do it:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List
 
 inMany :: Int -> KnightPos -> [KnightPos]
@@ -2430,7 +2430,7 @@ to the function.
 Now, we can change our <span class="fixed">canReachIn3</span> function
 to be more general as well:
 
-``` {.haskell:hs name="code"}
+```haskell
 canReachIn :: Int -> KnightPos -> KnightPos -> Bool
 canReachIn x start end = end `elem` inMany x start
 ```
@@ -2470,7 +2470,7 @@ Let's say that every item in the list comes with another value, a
 probability of it happening. It might make sense to present this like
 this then:
 
-``` {.haskell:hs name="code"}
+```haskell
 [(3,0.5),(5,0.25),(9,0.25)]
 ```
 
@@ -2486,7 +2486,7 @@ class="fixed">Rational</span>, we write it as if it were a fraction. The
 numerator and the denominator are separated by a <span
 class="fixed">%</span>. Here are a few examples:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 1%4
 1 % 4
 ghci> 1%2 + 1%2
@@ -2500,7 +2500,7 @@ to get a whole and in the third line we add one third with five quarters
 and get nineteen twelfths. So let'use throw out our floating points and
 use <span class="fixed">Rational</span> for our probabilities:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [(3,1%2),(5,1%4),(9,1%4)]
 [(3,1 % 2),(5,1 % 4),(9,1 % 4)]
 ```
@@ -2514,7 +2514,7 @@ represents values withs contexts too. Before we go any further, let's
 wrap this into a <span class="fixed">newtype</span> because something
 tells me we'll be making some instances.
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Ratio
 
 newtype Prob a = Prob { getProb :: [(a,Rational)] } deriving Show
@@ -2526,7 +2526,7 @@ list. When we map a function over a list, we apply it to each element.
 Here, we'll apply it to each element as well, only we'll leave the
 probabilities as they are. Let's make an instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor Prob where
     fmap f (Prob xs) = Prob $ map (\(x,p) -> (f x,p)) xs
 ```
@@ -2536,7 +2536,7 @@ matching, apply the function <span class="fixed">f</span> to the values
 while keeping the probabilities as they are and then wrap it back up.
 Let's see if it works:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap negate (Prob [(3,1%2),(5,1%4),(9,1%4)])
 Prob {getProb = [(-3,1 % 2),(-5,1 % 4),(-9,1 % 4)]}
 ```
@@ -2589,7 +2589,7 @@ to one.
 
 Here's this situation expressed as a probability list:
 
-``` {.haskell:hs name="code"}
+```haskell
 thisSituation :: Prob (Prob Char)
 thisSituation = Prob
     [( Prob [('a',1%2),('b',1%2)] , 1%4 )
@@ -2605,7 +2605,7 @@ m)</span> and we have ourselves a monad! So here's <span
 class="fixed">flatten</span>, which we'll use because the name <span
 class="fixed">join</span> is already taken:
 
-``` {.haskell:hs name="code"}
+```haskell
 flatten :: Prob (Prob a) -> Prob a
 flatten (Prob xs) = Prob $ concat $ map multAll xs
     where multAll (Prob innerxs,p) = map (\(x,r) -> (x,p*r)) innerxs
@@ -2622,7 +2622,7 @@ nested list.
 Now we have all that we need, we can write a <span
 class="fixed">Monad</span> instance!
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monad Prob where
     return x = Prob [(x,1%1)]
     m >>= f = flatten (fmap f m)
@@ -2665,7 +2665,7 @@ we throw all the coins at once, what are the odds of all of them landing
 tails? First, let's make probability values for a normal coin flip and
 for a loaded one:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Coin = Heads | Tails deriving (Show, Eq)
 
 coin :: Prob Coin
@@ -2677,7 +2677,7 @@ loadedCoin = Prob [(Heads,1%10),(Tails,9%10)]
 
 And finally, the coin throwing action:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.List (all)
 
 flipThree :: Prob Bool
@@ -2691,7 +2691,7 @@ flipThree = do
 Giving it a go, we see that the odds of all three landing tails are not
 that good, despite cheating with our loaded coin:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getProb flipThree
 [(False,1 % 40),(False,9 % 40),(False,1 % 40),(False,9 % 40),
  (False,1 % 40),(False,9 % 40),(False,1 % 40),(True,9 % 40)]

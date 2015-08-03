@@ -56,7 +56,7 @@ list is the head if the head is bigger than the maximum of the tail. If
 the maximum of the tail is bigger, well, then it's the maximum of the
 tail. That's it! Now let's implement that in Haskell.
 
-``` {.haskell:hs name="code"}
+```haskell
 maximum' :: (Ord a) => [a] -> a
 maximum' [] = error "maximum of empty list"
 maximum' [x] = x
@@ -111,7 +111,7 @@ class="fixed">max</span> is a function that takes two numbers and
 returns the bigger of them. Here's how we could rewrite <span
 class="fixed">maximum'</span> by using <span class="fixed">max</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 maximum' :: (Ord a) => [a] -> a
 maximum' [] = error "maximum of empty list"
 maximum' [x] = x
@@ -136,7 +136,7 @@ guess is that the edge condition is 0 or less. If we try to replicate
 something zero times, it should return an empty list. Also for negative
 numbers, because it doesn't really make sense.
 
-``` {.haskell:hs name="code"}
+```haskell
 replicate' :: (Num i, Ord i) => i -> a -> [a]
 replicate' n x
     | n <= 0    = []
@@ -170,7 +170,7 @@ a list, we get an empty list. Also if we try to take anything from an
 empty list, we get an empty list. Notice that those are two edge
 conditions right there. So let's write that out:
 
-``` {.haskell:hs name="code"}
+```haskell
 take' :: (Num i, Ord i) => i -> [a] -> [a]
 take' n _
     | n <= 0   = []
@@ -202,7 +202,7 @@ rest of it? Well, you could say that if we split a list to a head and a
 tail, the reversed list is equal to the reversed tail and then the head
 at the end.
 
-``` {.haskell:hs name="code"}
+```haskell
 reverse' :: [a] -> [a]
 reverse' [] = []
 reverse' (x:xs) = reverse' xs ++ [x]
@@ -219,7 +219,7 @@ class="fixed">repeat</span> takes an element and returns an infinite
 list that just has that element. A recursive implementation of that is
 really easy, watch.
 
-``` {.haskell:hs name="code"}
+```haskell
 repeat' :: a -> [a]
 repeat' x = x:repeat' x
 ```
@@ -242,7 +242,7 @@ with an empty list? Well, we get an empty list back then. So there's our
 edge condition. However, <span class="fixed">zip</span> takes two lists
 as parameters, so there are actually two edge conditions.
 
-``` {.haskell:hs name="code"}
+```haskell
 zip' :: [a] -> [b] -> [(a,b)]
 zip' _ [] = []
 zip' [] _ = []
@@ -265,7 +265,7 @@ that element is in the list. The edge condition, as is most of the times
 with lists, is the empty list. We know that an empty list contains no
 elements, so it certainly doesn't have the droids we're looking for.
 
-``` {.haskell:hs name="code"}
+```haskell
 elem' :: (Eq a) => a -> [a] -> Bool
 elem' a [] = False
 elem' a (x:xs)
@@ -307,7 +307,7 @@ get only the elements smaller than the head of our list and only
 elements that are bigger? List comprehensions. So, let's dive in and
 define this function.
 
-``` {.haskell:hs name="code"}
+```haskell
 quicksort :: (Ord a) => [a] -> [a]
 quicksort [] = []
 quicksort (x:xs) =

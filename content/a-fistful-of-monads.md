@@ -28,7 +28,7 @@ class="fixed">r -\> b</span>. To answer this question of how to map a
 function over some data type, all we had to do was look at the type of
 <span class="fixed">fmap</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 fmap :: (Functor f) => (a -> b) -> f a -> f b
 ```
 
@@ -46,7 +46,7 @@ class="fixed">[1,2,3]</span>? How would that work even? For this, the
 <span class="fixed">Applicative</span> type class was introduced, in
 which we wanted the answer to the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 (<*>) :: (Applicative f) => f (a -> b) -> f a -> f b
 ```
 
@@ -69,7 +69,7 @@ It was neat to see how the <span class="fixed">Applicative</span> type
 class allowed us to use normal functions on these values with context
 and how that context was preserved. Observe:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (*) <$> Just 2 <*> Just 8
 Just 16
 ghci> (++) <$> Just "klingon" <*> Nothing
@@ -93,7 +93,7 @@ That is, how do you apply a function of type <span class="fixed">a -\> m
 b</span> to a value of type <span class="fixed">m a</span>? So
 essentially, we will want this function:
 
-``` {.haskell:hs name="code"}
+```haskell
 (>>=) :: (Monad m) => m a -> (a -> m b) -> m b
 ```
 
@@ -154,7 +154,7 @@ over!
 
 Like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (++"!") (Just "wisdom")
 Just "wisdom!"
 ghci> fmap (++"!") Nothing
@@ -173,7 +173,7 @@ class="fixed">Nothing</span>. It makes sense because if you're missing
 either the function or the thing you're applying it to, you can't make
 something up out of thin air, so you have to propagate the failure:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just (+3) <*> Just 3
 Just 6
 ghci> Nothing <*> Just "greed"
@@ -187,7 +187,7 @@ class="fixed">Maybe</span> values, it's similar. All the values have to
 be <span class="fixed">Just</span> values, otherwise it's all for <span
 class="fixed">Nothing</span>!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> max <$> Just 3 <*> Just 6
 Just 6
 ghci> max <$> Just 3 <*> Nothing
@@ -212,7 +212,7 @@ class="fixed">\\x -\> Just (x+1)</span>. It takes a number, adds <span
 class="fixed">1</span> to it and wraps it in a <span
 class="fixed">Just</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (\x -> Just (x+1)) 1
 Just 2
 ghci> (\x -> Just (x+1)) 100
@@ -239,7 +239,7 @@ class="fixed">Maybe a</span> and a function that returns a <span
 class="fixed">Maybe b</span> and manages to apply that function to the
 <span class="fixed">Maybe a</span>. Here it is in code:
 
-``` {.haskell:hs name="code"}
+```haskell
 applyMaybe :: Maybe a -> (a -> Maybe b) -> Maybe b
 applyMaybe Nothing f  = Nothing
 applyMaybe (Just x) f = f x
@@ -249,7 +249,7 @@ Okay, now let's play with it for a bit. We'll use it as an infix
 function so that the <span class="fixed">Maybe</span> value is on the
 left side and the function on the right:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just 3 `applyMaybe` \x -> Just (x+1)
 Just 4
 ghci> Just "smile" `applyMaybe` \x -> Just (x ++ " :)")
@@ -268,7 +268,7 @@ a <span class="fixed">Nothing</span>, the whole result was <span
 class="fixed">Nothing</span>. What about if the function returns a <span
 class="fixed">Nothing</span>? Let's see:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just 3 `applyMaybe` \x -> if x > 2 then Just x else Nothing
 Just 3
 ghci> Just 1 `applyMaybe` \x -> if x > 2 then Just x else Nothing
@@ -309,7 +309,7 @@ class="fixed">Applicative</span> type class, monads come with their own
 type class: <span class="fixed">Monad</span>! Wow, who would have
 thought? This is what the type class looks like:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Monad m where
     return :: a -> m a
 
@@ -379,7 +379,7 @@ Now that we know what the <span class="fixed">Monad</span> type class
 looks like, let's take a look at how <span class="fixed">Maybe</span> is
 an instance of <span class="fixed">Monad</span>!
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monad Maybe where
     return x = Just x
     Nothing >>= f = Nothing
@@ -403,7 +403,7 @@ class="fixed">f</span> to it.
 
 We can play around with <span class="fixed">Maybe</span> as a monad:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return "WHAT" :: Maybe String
 Just "WHAT"
 ghci> Just 9 >>= \x -> return (x*10)
@@ -466,7 +466,7 @@ We can represent the pole with a simple pair of integers. The first
 component will signify the number of birds on the left side and the
 second component the number of birds on the right side:
 
-``` {.haskell:hs name="code"}
+```haskell
 type Birds = Int
 type Pole = (Birds,Birds)
 ```
@@ -481,7 +481,7 @@ descent).
 Next up, how about we make a function that takes a number of birds and
 lands them on one side of the pole. Here are the functions:
 
-``` {.haskell:hs name="code"}
+```haskell
 landLeft :: Birds -> Pole -> Pole
 landLeft n (left,right) = (left + n,right)
 
@@ -491,7 +491,7 @@ landRight n (left,right) = (left,right + n)
 
 Pretty straightforward stuff. Let's try them out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> landLeft 2 (0,0)
 (2,0)
 ghci> landRight 1 (1,2)
@@ -506,7 +506,7 @@ returns a <span class="fixed">Pole</span>, we can chain applications of
 <span class="fixed">landLeft</span> and <span
 class="fixed">landRight</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> landLeft 2 (landRight 1 (landLeft 1 (0,0)))
 (3,1)
 ```
@@ -520,14 +520,14 @@ function to something by first writing the function and then writing its
 parameter, but here it would be better if the pole went first and then
 the landing function. If we make a function like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 x -: f = f x
 ```
 
 We can apply functions by first writing the parameter and then the
 function:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 100 -: (*3)
 300
 ghci> True -: not
@@ -539,7 +539,7 @@ ghci> (0,0) -: landLeft 2
 By using this, we can repeatedly land birds on the pole in a more
 readable manner:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (0,0) -: landLeft 1 -: landRight 1 -: landLeft 2
 (3,1)
 ```
@@ -552,7 +552,7 @@ on the left.
 
 So far so good, but what happens if 10 birds land on one side?
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> landLeft 10 (0,3)
 (10,3)
 ```
@@ -561,7 +561,7 @@ ghci> landLeft 10 (0,3)
 poor Pierre falling through the air! This is pretty obvious here but
 what if we had a sequence of landings like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (0,0) -: landLeft 1 -: landRight 4 -: landLeft (-1) -: landRight (-2)
 (0,2)
 ```
@@ -576,7 +576,7 @@ new pole if the balance is okay but fail if the birds land in a lopsided
 manner. And what better way to add a context of failure to value than by
 using <span class="fixed">Maybe</span>! Let's rework these functions:
 
-``` {.haskell:hs name="code"}
+```haskell
 landLeft :: Birds -> Pole -> Maybe Pole
 landLeft n (left,right)
     | abs ((left + n) - right) < 4 = Just (left + n, right)
@@ -599,7 +599,7 @@ class="fixed">Just</span> and return that. If it isn't, we return a
 
 Let's give these babies a go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> landLeft 2 (0,0)
 Just (2,0)
 ghci> landLeft 10 (0,3)
@@ -625,7 +625,7 @@ and returns a <span class="fixed">Maybe Pole</span>. Luckily, we have
 <span class="fixed">\>\>=</span>, which does just that for <span
 class="fixed">Maybe</span>. Let's give it a go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> landRight 1 (0,0) >>= landLeft 2
 Just (2,1)
 ```
@@ -642,7 +642,7 @@ feed a <span class="fixed">Nothing</span> into <span
 class="fixed">landLeft 2</span>, the result is <span
 class="fixed">Nothing</span> and the failure is propagated:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Nothing >>= landLeft 2
 Nothing
 ```
@@ -653,7 +653,7 @@ function that takes a normal one.
 
 Here's a sequence of birdy landings:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return (0,0) >>= landRight 2 >>= landLeft 2 >>= landRight 2
 Just (2,4)
 ```
@@ -671,7 +671,7 @@ class="fixed">landRight 2</span>, resulting in <span class="fixed">Just
 Remember this example from before we introduced failure into Pierre's
 routine:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (0,0) -: landLeft 1 -: landRight 4 -: landLeft (-1) -: landRight (-2)
 (0,2)
 ```
@@ -681,7 +681,7 @@ middle there his balance was off but the result didn't reflect that. But
 let's give that a go now by using monadic application (<span
 class="fixed">\>\>=</span>) instead of normal application:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return (0,0) >>= landLeft 1 >>= landRight 4 >>= landLeft (-1) >>= landRight (-2)
 Nothing
 ```
@@ -727,7 +727,7 @@ We may also devise a function that ignores the current number of birds
 on the balancing pole and just makes Pierre slip and fall. We can call
 it <span class="fixed">banana</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 banana :: Pole -> Maybe Pole
 banana _ = Nothing
 ```
@@ -736,7 +736,7 @@ Now we can chain it together with our bird landings. It will always
 cause our walker to fall, because it ignores whatever's passed to it and
 always returns a failure. Check it:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return (0,0) >>= landLeft 1 >>= banana >>= landRight 1
 Nothing
 ```
@@ -751,7 +751,7 @@ predetermined monadic value, we can use the <span
 class="fixed">\>\></span> function, whose default implementation is
 this:
 
-``` {.haskell:hs name="code"}
+```haskell
 (>>) :: (Monad m) => m a -> m b -> m b
 m >> n = m >>= \_ -> n
 ```
@@ -762,7 +762,7 @@ that predetermined value. With monads however, their context and meaning
 has to be considered as well. Here's how <span class="fixed">\>\></span>
 acts with <span class="fixed">Maybe</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Nothing >> Just 3
 Nothing
 ghci> Just 3 >> Just 4
@@ -779,7 +779,7 @@ We can replace our <span class="fixed">banana</span> function in the
 chain with a <span class="fixed">\>\></span> and then a <span
 class="fixed">Nothing</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return (0,0) >>= landLeft 1 >> Nothing >>= landRight 1
 Nothing
 ```
@@ -791,7 +791,7 @@ made the clever choice of treating <span class="fixed">Maybe</span>
 values as values with a failure context and feeding them to functions
 like we did. Here's how a series of bird landings would look like:
 
-``` {.haskell:hs name="code"}
+```haskell
 routine :: Maybe Pole
 routine = case landLeft 1 (0,0) of
     Nothing -> Nothing
@@ -845,7 +845,7 @@ works and why it's useful.
 
 Consider this familiar example of monadic application:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just 3 >>= (\x -> Just (show x ++ "!"))
 Just "3!"
 ```
@@ -857,7 +857,7 @@ lambda. Once we're inside that lambda, it's just a normal value rather
 than a monadic value. Now, what if we had another <span
 class="fixed">\>\>=</span> inside that function? Check this out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just 3 >>= (\x -> Just "!" >>= (\y -> Just (show x ++ y)))
 Just "3!"
 ```
@@ -870,7 +870,7 @@ class="fixed">\\y -\> Just (show x ++ y)</span>. Inside this lambda, the
 because we got it from the outer lambda. All this sort of reminds me of
 the following expression:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let x = 3; y = "!" in show x ++ y
 "3!"
 ```
@@ -879,7 +879,7 @@ The main difference between these two is that the values in the former
 example are monadic. They're values with a failure context. We can
 replace any of them with a failure:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Nothing >>= (\x -> Just "!" >>= (\y -> Just (show x ++ y)))
 Nothing
 ghci> Just 3 >>= (\x -> Nothing >>= (\y -> Just (show x ++ y)))
@@ -902,7 +902,7 @@ expressions, only that the values in question are monadic values.
 To further illustrate this point, let's write this in a script and have
 each <span class="fixed">Maybe</span> value take up its own line:
 
-``` {.haskell:hs name="code"}
+```haskell
 foo :: Maybe String
 foo = Just 3   >>= (\x ->
       Just "!" >>= (\y ->
@@ -913,7 +913,7 @@ To save us from writing all these annoying lambdas, Haskell gives us
 <span class="fixed">do</span> notation. It allows us to write the
 previous piece of code like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 foo :: Maybe String
 foo = do
     x <- Just 3
@@ -951,7 +951,7 @@ account the possible failure of any of the previous ones.
 
 For instance, examine the following line:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just 9 >>= (\x -> Just (x > 8))
 Just True
 ```
@@ -962,7 +962,7 @@ class="fixed">9</span> and the result is a <span class="fixed">Just
 True</span>. If we rewrite this in <span class="fixed">do</span>
 notation, we get:
 
-``` {.haskell:hs name="code"}
+```haskell
 marySue :: Maybe Bool
 marySue = do
     x <- Just 9
@@ -985,7 +985,7 @@ relied on the previous one and each one had an added context of possible
 failure. Here's two birds landing on the left side, then two birds
 landing on the right and then one bird landing on the left:
 
-``` {.haskell:hs name="code"}
+```haskell
 routine :: Maybe Pole
 routine = do
     start <- return (0,0)
@@ -996,7 +996,7 @@ routine = do
 
 Let's see if he succeeds:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> routine
 Just (3,2)
 ```
@@ -1024,7 +1024,7 @@ whether they succeeded or failed).
 Again, let's take a look at what this piece of code would look like if
 we hadn't used the monadic aspects of <span class="fixed">Maybe</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 routine :: Maybe Pole
 routine =
     case Just (0,0) of
@@ -1044,7 +1044,7 @@ start</span> becomes <span class="fixed">first</span>, etc.
 If we want to throw the Pierre a banana peel in <span
 class="fixed">do</span> notation, we can do the following:
 
-``` {.haskell:hs name="code"}
+```haskell
 routine :: Maybe Pole
 routine = do
     start <- return (0,0)
@@ -1077,7 +1077,7 @@ class="fixed">let</span> expressions and function parameters. Here's an
 example of pattern matching in a <span class="fixed">do</span>
 expression:
 
-``` {.haskell:hs name="code"}
+```haskell
 justH :: Maybe Char
 justH = do
     (x:xs) <- Just "hello"
@@ -1102,7 +1102,7 @@ class="fixed">Monad</span> type class and it enables failed pattern
 matching to result in a failure in the context of the current monad
 instead of making our program crash. Its default implementation is this:
 
-``` {.haskell:hs name="code"}
+```haskell
 fail :: (Monad m) => String -> m a
 fail msg = error msg
 ```
@@ -1112,7 +1112,7 @@ incorporate a context of possible failure (like <span
 class="fixed">Maybe</span>) usually implement it on their own. For <span
 class="fixed">Maybe</span>, its implemented like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 fail _ = Nothing
 ```
 
@@ -1124,7 +1124,7 @@ class="fixed">Nothing</span>. This is preferable to having our program
 crash. Here's a <span class="fixed">do</span> expression with a pattern
 that's bound to fail:
 
-``` {.haskell:hs name="code"}
+```haskell
 wopwop :: Maybe Char
 wopwop = do
     (x:xs) <- Just ""
@@ -1135,7 +1135,7 @@ The pattern matching fails, so the effect is the same as if the whole
 line with the pattern was replaced with a <span
 class="fixed">Nothing</span>. Let's try this out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> wopwop
 Nothing
 ```
@@ -1163,7 +1163,7 @@ class="fixed">[3,8,9]</span> contains several results, so we can view it
 as one value that is actually many values at the same time. Using lists
 as applicative functors showcases this non-determinism nicely:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (*) <$> [1,2,3] <*> [10,100,1000]
 [10,100,1000,20,200,2000,30,300,3000]
 ```
@@ -1178,7 +1178,7 @@ This context of non-determinism translates to monads very nicely. Let's
 go ahead and see what the <span class="fixed">Monad</span> instance for
 lists looks like:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monad [] where
     return x = [x]
     xs >>= f = concat (map f xs)
@@ -1203,7 +1203,7 @@ class="fixed">\>\>=</span> wouldn't be so useful because after one use,
 the context would be lost. Anyway, let's try feeding a non-deterministic
 value to a function:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [3,4,5] >>= \x -> [x,-x]
 [3,-3,4,-4,5,-5]
 ```
@@ -1227,7 +1227,7 @@ To see how this is achieved, we can just follow the implementation.
 First, we start off with the list <span class="fixed">[3,4,5]</span>.
 Then, we map the lambda over it and the result is the following:
 
-``` {.haskell:hs name="code"}
+```haskell
 [[3,-3],[4,-4],[5,-5]]
 ```
 
@@ -1241,7 +1241,7 @@ class="fixed">Nothing</span>, because it signifies the absence of a
 result. That's why failing is just defined as the empty list. The error
 message gets thrown away. Let's play around with lists that fail:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [] >>= \x -> ["bad","mad","rad"]
 []
 ghci> [1,2,3] >>= \x -> []
@@ -1260,7 +1260,7 @@ Just like with <span class="fixed">Maybe</span> values, we can chain
 several lists with <span class="fixed">\>\>=</span>, propagating the
 non-determinism:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [1,2] >>= \n -> ['a','b'] >>= \ch -> return (n,ch)
 [(1,'a'),(1,'b'),(2,'a'),(2,'b')]
 ```
@@ -1297,7 +1297,7 @@ separate branch.
 Here's the previous expression rewritten in <span
 class="fixed">do</span> notation:
 
-``` {.haskell:hs name="code"}
+```haskell
 listOfTuples :: [(Int,Char)]
 listOfTuples = do
     n <- [1,2]
@@ -1318,7 +1318,7 @@ Using lists with <span class="fixed">do</span> notation really reminds
 me of something we've seen before. Check out the following piece of
 code:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [ (n,ch) | n <- [1,2], ch <- ['a','b'] ]
 [(1,'a'),(1,'b'),(2,'a'),(2,'b')]
 ```
@@ -1345,7 +1345,7 @@ List comprehensions allow us to filter our output. For instance, we can
 filter a list of numbers to search only for that numbers whose digits
 contain a <span class="fixed">7</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [ x | x <- [1..50], '7' `elem` show x ]
 [7,17,27,37,47]
 ```
@@ -1359,7 +1359,7 @@ the <span class="fixed">MonadPlus</span> type class. The <span
 class="fixed">MonadPlus</span> type class is for monads that can also
 act as monoids. Here's its definition:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Monad m => MonadPlus m where
     mzero :: m a
     mplus :: m a -> m a -> m a
@@ -1371,7 +1371,7 @@ type class and <span class="fixed">mplus</span> corresponds to <span
 class="fixed">mappend</span>. Because lists are monoids as well as
 monads, they can be made an instance of this type class:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance MonadPlus [] where
     mzero = []
     mplus = (++)
@@ -1383,7 +1383,7 @@ computation. <span class="fixed">mplus</span> joins two
 non-deterministic values into one. The <span class="fixed">guard</span>
 function is defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 guard :: (MonadPlus m) => Bool -> m ()
 guard True = return ()
 guard False = mzero
@@ -1394,7 +1394,7 @@ takes a <span class="fixed">()</span> and puts it in a minimal default
 context that still succeeds. Otherwise, it makes a failed monadic value.
 Here it is in action:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> guard (5 > 2) :: Maybe ()
 Just ()
 ghci> guard (1 > 2) :: Maybe ()
@@ -1408,7 +1408,7 @@ ghci> guard (1 > 2) :: [()]
 Looks interesting, but how is it useful? In the list monad, we use it to
 filter out non-deterministic computations. Observe:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [1..50] >>= (\x -> guard ('7' `elem` show x) >> return x)
 [7,17,27,37,47]
 ```
@@ -1418,7 +1418,7 @@ comprehension. How does <span class="fixed">guard</span> achieve this?
 Let's first see how <span class="fixed">guard</span> functions in
 conjunction with <span class="fixed">\>\></span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> guard (5 > 2) >> return "cool" :: [String]
 ["cool"]
 ghci> guard (1 > 2) >> return "cool" :: [String]
@@ -1441,7 +1441,7 @@ computation to continue.
 Here's the previous example rewritten in <span class="fixed">do</span>
 notation:
 
-``` {.haskell:hs name="code"}
+```haskell
 sevensOnly :: [Int]
 sevensOnly = do
     x <- [1..50]
@@ -1454,7 +1454,7 @@ result by using <span class="fixed">return</span>, the resulting list
 would just be a list of empty tuples. Here's this again in the form of a
 list comprehension:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [ x | x <- [1..50], '7' `elem` show x ]
 [7,17,27,37,47]
 ```
@@ -1475,7 +1475,7 @@ he's in and the second number will determine the row.
 Let's make a type synonym for the knight's current position on the chess
 board:
 
-``` {.haskell:hs name="code"}
+```haskell
 type KnightPos = (Int,Int)
 ```
 
@@ -1487,7 +1487,7 @@ non-determinism at our disposal, so instead of picking one move, let's
 just pick all of them at once. Here's a function that takes the knight's
 position and returns all of its next moves:
 
-``` {.haskell:hs name="code"}
+```haskell
 moveKnight :: KnightPos -> [KnightPos]
 moveKnight (c,r) = do
     (c',r') <- [(c+2,r-1),(c+2,r+1),(c-2,r-1),(c-2,r+1)
@@ -1510,7 +1510,7 @@ This function can also be written without the use of lists as a monad,
 but we did it here just for kicks. Here is the same function done with
 <span class="fixed">filter</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 moveKnight :: KnightPos -> [KnightPos]
 moveKnight (c,r) = filter onBoard
     [(c+2,r-1),(c+2,r+1),(c-2,r-1),(c-2,r+1)
@@ -1522,7 +1522,7 @@ moveKnight (c,r) = filter onBoard
 Both of these do the same thing, so pick one that you think looks nicer.
 Let's give it a whirl:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> moveKnight (6,2)
 [(8,1),(8,3),(4,1),(4,3),(7,4),(5,4)]
 ghci> moveKnight (8,1)
@@ -1536,7 +1536,7 @@ class="fixed">\>\>=</span> to feed it to <span
 class="fixed">moveKnight</span>. Here's a function that takes a position
 and returns all the positions that you can reach from it in three moves:
 
-``` {.haskell:hs name="code"}
+```haskell
 in3 :: KnightPos -> [KnightPos]
 in3 start = do
     first <- moveKnight start
@@ -1549,7 +1549,7 @@ quite big, because if there are several ways to reach some position in
 three moves, it crops up in the list several times. The above without
 <span class="fixed">do</span> notation:
 
-``` {.haskell:hs name="code"}
+```haskell
 in3 start = return start >>= moveKnight >>= moveKnight >>= moveKnight
 ```
 
@@ -1566,7 +1566,7 @@ the function to that value, but we did it here anyway for style.
 Now, let's make a function that takes two positions and tells us if you
 can get from one to the other in exactly three steps:
 
-``` {.haskell:hs name="code"}
+```haskell
 canReachIn3 :: KnightPos -> KnightPos -> Bool
 canReachIn3 start end = end `elem` in3 start
 ```
@@ -1576,7 +1576,7 @@ the position we're looking for is among them. So let's see if we can get
 from <span class="fixed">(6,2)</span> to <span
 class="fixed">(6,1)</span> in three moves:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (6,2) `canReachIn3` (6,1)
 True
 ```
@@ -1584,7 +1584,7 @@ True
 Yes! How about from <span class="fixed">(6,2)</span> to <span
 class="fixed">(7,3)</span>?
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (6,2) `canReachIn3` (7,3)
 False
 ```
@@ -1644,7 +1644,7 @@ such a context, it makes sense that we treat it as a successful
 computation because, well, we know what the value is. Here's some <span
 class="fixed">return</span> usage with <span class="fixed">Maybe</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return 3 >>= (\x -> Just (x+100000))
 Just 100003
 ghci> (\x -> Just (x+100000)) 3
@@ -1657,7 +1657,7 @@ lists goes over all the values in the list and applies the function to
 them, but since there's only one value in a singleton list, it's the
 same as applying the function to that value:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return "WoM" >>= (\x -> [x,x,x])
 ["WoM","WoM","WoM"]
 ghci> (\x -> [x,x,x]) "WoM"
@@ -1690,7 +1690,7 @@ presents that value as its result. This means that, for instance, for
 for lists, it doesn't introduce any extra non-determinism. Here's a test
 run for a few monads:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just "move on up" >>= (\x -> return x)
 Just "move on up"
 ghci> [1,2,3,4] >>= (\x -> return x)
@@ -1702,7 +1702,7 @@ Wah!
 If we take a closer look at the list example, the implementation for
 <span class="fixed">\>\>=</span> is:
 
-``` {.haskell:hs name="code"}
+```haskell
 xs >>= f = concat (map f xs)
 ```
 
@@ -1744,7 +1744,7 @@ Remember when we had our tightrope walker Pierre walk a rope while birds
 landed on his balancing pole? To simulate birds landing on his balancing
 pole, we made a chain of several functions that might produce failure:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> return (0,0) >>= landRight 2 >>= landLeft 2 >>= landRight 2
 Just (2,4)
 ```
@@ -1755,14 +1755,14 @@ that value to the next monadic function, <span class="fixed">landRight
 into the next monadic function, and so on. If we were to explicitly
 parenthesize this, we'd write:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> ((return (0,0) >>= landRight 2) >>= landLeft 2) >>= landRight 2
 Just (2,4)
 ```
 
 But we can also write the routine like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 return (0,0) >>= (\x ->
 landRight 2 x >>= (\y ->
 landLeft 2 y >>= (\z ->
@@ -1785,7 +1785,7 @@ what matters is their meaning. Here's another way to look at this law:
 consider composing two functions, <span class="fixed">f</span> and <span
 class="fixed">g</span>. Composing two functions is implemented like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 (.) :: (b -> c) -> (a -> b) -> (a -> c)
 f . g = (\x -> f (g x))
 ```
@@ -1803,14 +1803,14 @@ class="fixed">b -\> m c</span>, because that function accepts a normal
 <span class="fixed">\>\>=</span> to make that happen. So by using <span
 class="fixed">\>\>=</span>, we can compose two monadic functions:
 
-``` {.haskell:hs name="code"}
+```haskell
 (<=<) :: (Monad m) => (b -> m c) -> (a -> m b) -> (a -> m c)
 f <=< g = (\x -> g x >>= f)
 ```
 
 So now we can compose two monadic functions:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let f x = [x,-x]
 ghci> let g x = [x*3,x*2]
 ghci> let h = f <=< g

@@ -15,7 +15,7 @@ how do we make our own? Well, one way is to use the *data* keyword to
 define a type. Let's see how the <span class="fixed">Bool</span> type is
 defined in the standard library.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Bool = False | True
 ```
 
@@ -32,7 +32,7 @@ type name and the value constructors have to be capital cased.
 In a similar fashion, we can think of the <span class="fixed">Int</span>
 type as being defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Int = -2147483648 | -2147483647 | ... | -1 | 0 | 1 | 2 | ... | 2147483647
 ```
 
@@ -51,7 +51,7 @@ anything else. A better solution would be to make our own type to
 represent a shape. Let's say that a shape can be a circle or a
 rectangle. Here it is:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Shape = Circle Float Float Float | Rectangle Float Float Float Float
 ```
 
@@ -70,7 +70,7 @@ are actually functions that ultimately return a value of a data type.
 Let's take a look at the type signatures for these two value
 constructors.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t Circle
 Circle :: Float -> Float -> Float -> Shape
 ghci> :t Rectangle
@@ -81,7 +81,7 @@ Cool, so value constructors are functions like everything else. Who
 would have thought? Let's make a function that takes a shape and returns
 its surface.
 
-``` {.haskell:hs name="code"}
+```haskell
 surface :: Shape -> Float
 surface (Circle _ _ r) = pi * r ^ 2
 surface (Rectangle x1 y1 x2 y2) = (abs $ x2 - x1) * (abs $ y2 - y1)
@@ -102,7 +102,7 @@ just write a constructor and then bind its fields to names. Because
 we're interested in the radius, we don't actually care about the first
 two fields, which tell us where the circle is.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> surface $ Circle 10 20 10
 314.15927
 ghci> surface $ Rectangle 0 0 100 100
@@ -118,7 +118,7 @@ the string representation of our value and then it prints that out to
 the terminal. To make our <span class="fixed">Shape</span> type part of
 the <span class="fixed">Show</span> typeclass, we modify it like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Shape = Circle Float Float Float | Rectangle Float Float Float Float deriving (Show)
 ```
 
@@ -127,7 +127,7 @@ say that if we add <span class="fixed">deriving (Show)</span> at the end
 of a *data* declaration, Haskell automagically makes that type part of
 the <span class="fixed">Show</span> typeclass. So now, we can do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Circle 10 20 5
 Circle 10.0 20.0 5.0
 ghci> Rectangle 50 230 60 90
@@ -138,7 +138,7 @@ Value constructors are functions, so we can map them and partially apply
 them and everything. If we want a list of concentric circles with
 different radii, we can do this.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> map (Circle 10 20) [4,5,6,6]
 [Circle 10.0 20.0 4.0,Circle 10.0 20.0 5.0,Circle 10.0 20.0 6.0,Circle 10.0 20.0 6.0]
 ```
@@ -147,7 +147,7 @@ Our data type is good, although it could be better. Let's make an
 intermediate data type that defines a point in two-dimensional space.
 Then we can use that to make our shapes more understandable.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Point = Point Float Float deriving (Show)
 data Shape = Circle Point Float | Rectangle Point Point deriving (Show)
 ```
@@ -162,7 +162,7 @@ understand what's what. Same goes for the rectangle. We have to adjust
 our <span class="fixed">surface</span> function to reflect these
 changes.
 
-``` {.haskell:hs name="code"}
+```haskell
 surface :: Shape -> Float
 surface (Circle _ r) = pi * r ^ 2
 surface (Rectangle (Point x1 y1) (Point x2 y2)) = (abs $ x2 - x1) * (abs $ y2 - y1)
@@ -174,7 +174,7 @@ used a nested pattern matching to get the fields of the points. If we
 wanted to reference the points themselves for some reason, we could have
 used as-patterns.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> surface (Rectangle (Point 0 0) (Point 100 100))
 10000.0
 ghci> surface (Circle (Point 0 0) 24)
@@ -186,7 +186,7 @@ to move it on the x axis and the amount to move it on the y axis and
 then returns a new shape that has the same dimensions, only it's located
 somewhere else.
 
-``` {.haskell:hs name="code"}
+```haskell
 nudge :: Shape -> Float -> Float -> Shape
 nudge (Circle (Point x y) r) a b = Circle (Point (x+a) (y+b)) r
 nudge (Rectangle (Point x1 y1) (Point x2 y2)) a b = Rectangle (Point (x1+a) (y1+b)) (Point (x2+a) (y2+b))
@@ -195,7 +195,7 @@ nudge (Rectangle (Point x1 y1) (Point x2 y2)) a b = Rectangle (Point (x1+a) (y1+
 Pretty straightforward. We add the nudge amounts to the points that
 denote the position of the shape.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> nudge (Circle (Point 34 34) 10) 5 10
 Circle (Point 39.0 44.0) 10.0
 ```
@@ -204,7 +204,7 @@ If we don't want to deal directly with points, we can make some
 auxilliary functions that create shapes of some size at the zero
 coordinates and then nudge those.
 
-``` {.haskell:hs name="code"}
+```haskell
 baseCircle :: Float -> Shape
 baseCircle r = Circle (Point 0 0) r
 
@@ -212,7 +212,7 @@ baseRect :: Float -> Float -> Shape
 baseRect width height = Rectangle (Point 0 0) (Point width height)
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> nudge (baseRect 40 100) 60 23
 Rectangle (Point 60.0 23.0) (Point 100.0 123.0)
 ```
@@ -227,7 +227,7 @@ class="fixed">..</span>.
 If we wanted to export the functions and types that we defined here in a
 module, we could start it off like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 module Shapes
 ( Point(..)
 , Shape(..)
@@ -276,14 +276,14 @@ name, age, height, phone number, and favorite ice-cream flavor. I don't
 know about you, but that's all I ever want to know about a person. Let's
 give it a go!
 
-``` {.haskell:hs name="code"}
+```haskell
 data Person = Person String String Int Float String String deriving (Show)
 ```
 
 O-kay. The first field is the first name, the second is the last name,
 the third is the age and so on. Let's make a person.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let guy = Person "Buddy" "Finklestein" 43 184.2 "526-2928" "Chocolate"
 ghci> guy
 Person "Buddy" "Finklestein" 43 184.2 "526-2928" "Chocolate"
@@ -294,7 +294,7 @@ create a function to get seperate info from a person? A function that
 gets some person's first name, a function that gets some person's last
 name, etc. Well, we'd have to define them kind of like this.
 
-``` {.haskell:hs name="code"}
+```haskell
 firstName :: Person -> String
 firstName (Person firstname _ _ _ _ _) = firstname
 
@@ -317,7 +317,7 @@ flavor (Person _ _ _ _ _ flavor) = flavor
 Whew! I certainly did not enjoy writing that! Despite being very
 cumbersome and BORING to write, this method works.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let guy = Person "Buddy" "Finklestein" 43 184.2 "526-2928" "Chocolate"
 ghci> firstName guy
 "Buddy"
@@ -334,7 +334,7 @@ and anticipated this scenario. They included an alternative way to write
 data types. Here's how we could achieve the above functionality with
 record syntax.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Person = Person { firstName :: String
                      , lastName :: String
                      , age :: Int
@@ -357,7 +357,7 @@ class="fixed">lastName</span>, <span class="fixed">age</span>, <span
 class="fixed">height</span>, <span class="fixed">phoneNumber</span> and
 <span class="fixed">flavor</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t flavor
 flavor :: Person -> String
 ghci> :t firstName
@@ -370,22 +370,22 @@ use record syntax to define and instantiate the type. Say we have a type
 that represents a car. We want to keep track of the company that made
 it, the model name and its year of production. Watch.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Car = Car String String Int deriving (Show)
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Car "Ford" "Mustang" 1967
 Car "Ford" "Mustang" 1967
 ```
 
 If we define it using record syntax, we can make a new car like this.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Car = Car {company :: String, model :: String, year :: Int} deriving (Show)
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Car {company="Ford", model="Mustang", year=1967}
 Car {company = "Ford", model = "Mustang", year = 1967}
 ```
@@ -414,7 +414,7 @@ you're familiar with templates in C++, you'll see some parallels. To get
 a clear picture of what type parameters work like in action, let's take
 a look at how a type we've already met is implemented.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Maybe a = Nothing | Just a
 ```
 
@@ -446,7 +446,7 @@ value that just has a type of <span class="fixed">[]</span>.
 
 Let's play around with the <span class="fixed">Maybe</span> type.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just "Haha"
 Just "Haha"
 ghci> Just 84
@@ -490,7 +490,7 @@ class="fixed">Maybe a</span> type. If our type acts as some kind of box,
 it's good to use them. We could change our <span
 class="fixed">Car</span> data type from this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Car = Car { company :: String
                , model :: String
                , year :: Int
@@ -499,7 +499,7 @@ data Car = Car { company :: String
 
 To this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Car a b c = Car { company :: a
                      , model :: b
                      , year :: c
@@ -512,12 +512,12 @@ class="fixed">Car String String Int</span> type. For instance, given our
 first definition of <span class="fixed">Car</span>, we could make a
 function that displays the car's properties in a nice little text.
 
-``` {.haskell:hs name="code"}
+```haskell
 tellCar :: Car -> String
 tellCar (Car {company = c, model = m, year = y}) = "This " ++ c ++ " " ++ m ++ " was made in " ++ show y
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let stang = Car {company="Ford", model="Mustang", year=1967}
 ghci> tellCar stang
 "This Ford Mustang was made in 1967"
@@ -527,7 +527,7 @@ A cute little function! The type declaration is cute and it works
 nicely. Now what if <span class="fixed">Car</span> was <span
 class="fixed">Car a b c</span>?
 
-``` {.haskell:hs name="code"}
+```haskell
 tellCar :: (Show a) => Car String String a -> String
 tellCar (Car {company = c, model = m, year = y}) = "This " ++ c ++ " " ++ m ++ " was made in " ++ show y
 ```
@@ -539,7 +539,7 @@ complicated and the only benefit we'd actually get would be that we can
 use any type that's an instance of the <span class="fixed">Show</span>
 typeclass as the type for <span class="fixed">c</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> tellCar (Car "Ford" "Mustang" 1967)
 "This Ford Mustang was made in 1967"
 ghci> tellCar (Car "Ford" "Mustang" "nineteen sixty seven")
@@ -574,7 +574,7 @@ type, as long as the type of the key is part of the <span
 class="fixed">Ord</span> typeclass. If we were defining a mapping type,
 we could add a typeclass constraint in the *data* declaration:
 
-``` {.haskell:hs name="code"}
+```haskell
 data (Ord k) => Map k v = ...
 ```
 
@@ -605,7 +605,7 @@ Let's implement a 3D vector type and add some operations for it. We'll
 be using a parameterized type because even though it will usually
 contain numeric types, it will still support several of them.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Vector a = Vector a a a deriving (Show)
 
 vplus :: (Num t) => Vector t -> Vector t -> Vector t
@@ -644,7 +644,7 @@ would be wrong, because we have to put types in type declaration and the
 vector *type* constructor takes only one parameter, whereas the value
 constructor takes three. Let's play around with our vectors.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Vector 3 5 8 `vplus` Vector 9 2 8
 Vector 12 7 16
 ghci> Vector 3 5 8 `vplus` Vector 9 2 8 `vplus` Vector 0 2 3
@@ -701,7 +701,7 @@ derive the behavior of our types in these contexts if we use the
 
 Consider this data type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Person = Person { firstName :: String
                      , lastName :: String
                      , age :: Int
@@ -715,7 +715,7 @@ person? Sure it does. We can try to equate them and see if they're equal
 or not. That's why it would make sense for this type to be part of the
 <span class="fixed">Eq</span> typeclass. We'll derive the instance.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Person = Person { firstName :: String
                      , lastName :: String
                      , age :: Int
@@ -734,7 +734,7 @@ typeclass. But since both <span class="fixed">String</span> and <span
 class="fixed">Int</span> are, we're OK. Let's test our <span
 class="fixed">Eq</span> instance.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let mikeD = Person {firstName = "Michael", lastName = "Diamond", age = 43}
 ghci> let adRock = Person {firstName = "Adam", lastName = "Horovitz", age = 41}
 ghci> let mca = Person {firstName = "Adam", lastName = "Yauch", age = 44}
@@ -754,7 +754,7 @@ class="fixed">a</span> for all functions that have a class constraint of
 <span class="fixed">Eq a</span> in their type signature, such as <span
 class="fixed">elem</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let beastieBoys = [mca, adRock, mikeD]
 ghci> mikeD `elem` beastieBoys
 True
@@ -769,7 +769,7 @@ to make our type an instance of them. Let's make our <span
 class="fixed">Person</span> data type a part of <span
 class="fixed">Show</span> and <span class="fixed">Read</span> as well.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Person = Person { firstName :: String
                      , lastName :: String
                      , age :: Int
@@ -778,7 +778,7 @@ data Person = Person { firstName :: String
 
 Now we can print a person out to the terminal.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let mikeD = Person {firstName = "Michael", lastName = "Diamond", age = 43}
 ghci> mikeD
 Person {firstName = "Michael", lastName = "Diamond", age = 43}
@@ -802,7 +802,7 @@ function, we have to use an explicit type annotation to tell Haskell
 which type we want to get as a result. If we don't make the type we want
 as a result explicit, Haskell doesn't know which type we want.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> read "Person {firstName =\"Michael\", lastName =\"Diamond\", age = 43}" :: Person
 Person {firstName = "Michael", lastName = "Diamond", age = 43}
 ```
@@ -811,7 +811,7 @@ If we use the result of our <span class="fixed">read</span> later on in
 a way that Haskell can infer that it should read it as a person, we
 don't have to use type annotation.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> read "Person {firstName =\"Michael\", lastName =\"Diamond\", age = 43}" == mikeD
 True
 ```
@@ -831,7 +831,7 @@ class="fixed">False</span> or <span class="fixed">True</span>. For the
 purpose of seeing how it behaves when compared, we can think of it as
 being implemented like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Bool = False | True deriving (Ord)
 ```
 
@@ -841,7 +841,7 @@ constructor is specified after it, we can consider <span
 class="fixed">True</span> as greater than <span
 class="fixed">False</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> True `compare` False
 GT
 ghci> True > False
@@ -858,7 +858,7 @@ class="fixed">Just something</span>, even if that something is minus one
 billion trillion. But if we compare two <span class="fixed">Just</span>
 values, then it goes to compare what's inside them.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Nothing < Just 100
 True
 ghci> Nothing > Just (-49999)
@@ -878,7 +878,7 @@ We can easily use algebraic data types to make enumerations and the
 <span class="fixed">Enum</span> and <span class="fixed">Bounded</span>
 typeclasses help us with that. Consider the following data type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
 ```
 
@@ -891,7 +891,7 @@ have a lowest possible value and highest possible value. And while we're
 at it, let's also make it an instance of all the other derivable
 typeclasses and see what we can do with it.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Day = Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday
            deriving (Eq, Ord, Show, Read, Bounded, Enum)
 ```
@@ -900,7 +900,7 @@ Because it's part of the <span class="fixed">Show</span> and <span
 class="fixed">Read</span> typeclasses, we can convert values of this
 type to and from strings.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Wednesday
 Wednesday
 ghci> show Wednesday
@@ -912,7 +912,7 @@ Saturday
 Because it's part of the <span class="fixed">Eq</span> and <span
 class="fixed">Ord</span> typeclasses, we can compare or equate days.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Saturday == Sunday
 False
 ghci> Saturday == Saturday
@@ -926,7 +926,7 @@ LT
 It's also part of <span class="fixed">Bounded</span>, so we can get the
 lowest and highest day.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> minBound :: Day
 Monday
 ghci> maxBound :: Day
@@ -937,7 +937,7 @@ It's also an instance of <span class="fixed">Enum</span>. We can get
 predecessors and successors of days and we can make list ranges from
 them!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> succ Monday
 Tuesday
 ghci> pred Saturday
@@ -962,7 +962,7 @@ someone reading our code and documentation. Here's how the standard
 library defines <span class="fixed">String</span> as a synonym for <span
 class="fixed">[Char]</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
  type String = [Char]
 
 ```
@@ -986,7 +986,7 @@ converting it into a map. As we've already found out, an association
 list is a list of key-value pairs. Let's look at a phonebook that we
 had.
 
-``` {.haskell:hs name="code"}
+```haskell
 phoneBook :: [(String,String)]
 phoneBook =
     [("betty","555-2938")
@@ -1004,7 +1004,7 @@ association list that maps from strings to strings, but not much else.
 Let's make a type synonym to convey some more information in the type
 declaration.
 
-``` {.haskell:hs name="code"}
+```haskell
 type PhoneBook = [(String,String)]
 ```
 
@@ -1012,7 +1012,7 @@ Now the type declaration for our phonebook can be <span
 class="fixed">phoneBook :: PhoneBook</span>. Let's make a type synonym
 for <span class="fixed">String</span> as well.
 
-``` {.haskell:hs name="code"}
+```haskell
 type PhoneNumber = String
 type Name = String
 type PhoneBook = [(Name,PhoneNumber)]
@@ -1027,7 +1027,7 @@ So now, when we implement a function that takes a name and a number and
 sees if that name and number combination is in our phonebook, we can
 give it a very pretty and descriptive type declaration.
 
-``` {.haskell:hs name="code"}
+```haskell
 inPhoneBook :: Name -> PhoneNumber -> PhoneBook -> Bool
 inPhoneBook name pnumber pbook = (name,pnumber) `elem` pbook
 ```
@@ -1047,7 +1047,7 @@ Type synonyms can also be parameterized. If we want a type that
 represents an association list type but still want it to be general so
 it can use any type as the keys and values, we can do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 type AssocList k v = [(k,v)]
 ```
 
@@ -1082,13 +1082,13 @@ and get back a partially applied type constructor. If we wanted a type
 that represents a map (from <span class="fixed">Data.Map</span>) from
 integers to something, we could either do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 type IntMap v = Map Int v
 ```
 
 Or we could do it like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 type IntMap = Map Int
 ```
 
@@ -1125,7 +1125,7 @@ Another cool data type that takes two types as its parameters is the
 <span class="fixed">Either a b</span> type. This is roughly how it's
 defined:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Either a b = Left a | Right b deriving (Eq, Ord, Read, Show)
 ```
 
@@ -1138,7 +1138,7 @@ class="fixed">Either a b</span>, we usually pattern match on both <span
 class="fixed">Left</span> and <span class="fixed">Right</span> and we
 different stuff based on which one of them it was.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Right 20
 Right 20
 ghci> Left "w00t"
@@ -1176,7 +1176,7 @@ class="fixed">Data.Map</span> to represent the lockers. It'll map from
 locker numbers to a pair of whether the locker is in use or not and the
 locker code.
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Data.Map as Map
 
 data LockerState = Taken | Free deriving (Show, Eq)
@@ -1197,7 +1197,7 @@ which case we can't tell the code or the locker number might not exist
 at all. If the lookup fails, we're just going to use a <span
 class="fixed">String</span> to tell what's happened.
 
-``` {.haskell:hs name="code"}
+```haskell
 lockerLookup :: Int -> LockerMap -> Either String Code
 lockerLookup lockerNumber map =
     case Map.lookup lockerNumber map of
@@ -1219,7 +1219,7 @@ String</span>, but we introduced that type synonym to introduce some
 additional documentation into the type declaration. Here's an example
 map:
 
-``` {.haskell:hs name="code"}
+```haskell
 lockers :: LockerMap
 lockers = Map.fromList
     [(100,(Taken,"ZD39I"))
@@ -1233,7 +1233,7 @@ lockers = Map.fromList
 
 Now let's try looking up some locker codes.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> lockerLookup 101 lockers
 Right "JAH3I"
 ghci> lockerLookup 100 lockers
@@ -1280,7 +1280,7 @@ joined together with a <span class="fixed">:</span> with another list
 
 Let's use algebraic data types to implement our own list then!
 
-``` {.haskell:hs name="code"}
+```haskell
 data List a = Empty | Cons a (List a) deriving (Show, Read, Eq, Ord)
 ```
 
@@ -1289,7 +1289,7 @@ paragraphs. It's either an empty list or a combination of a head with
 some value and a list. If you're confused about this, you might find it
 easier to understand in record syntax.
 
-``` {.haskell:hs name="code"}
+```haskell
 data List a = Empty | Cons { listHead :: a, listTail :: List a} deriving (Show, Read, Eq, Ord)
 ```
 
@@ -1301,7 +1301,7 @@ returns a list. We can already use our new list type! In other words, it
 has two fields. One field is of the type of <span class="fixed">a</span>
 and the other is of the type <span class="fixed">[a]</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Empty
 Empty
 ghci> 5 `Cons` Empty
@@ -1323,7 +1323,7 @@ comprised of only special characters. We can also do the same with
 constructors, since they're just functions that return a data type. So
 check this out.
 
-``` {.haskell:hs name="code"}
+```haskell
 infixr 5 :-:
 data List a = Empty | a :-: (List a) deriving (Show, Read, Eq, Ord)
 ```
@@ -1345,7 +1345,7 @@ Otherwise, we just wrote <span class="fixed">a :-: (List a)</span>
 instead of <span class="fixed">Cons a (List a)</span>. Now, we can write
 out lists in our list type like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 3 :-: 4 :-: 5 :-: Empty
 (:-:) 3 ((:-:) 4 ((:-:) 5 Empty))
 ghci> let a = 3 :-: 4 :-: 5 :-: Empty
@@ -1361,7 +1361,7 @@ parentheses around the operator (remember, <span class="fixed">4 +
 Let's make a function that adds two of our lists together. This is how
 <span class="fixed">++</span> is defined for normal lists:
 
-``` {.haskell:hs name="code"}
+```haskell
 infixr 5  ++
 (++) :: [a] -> [a] -> [a]
 []     ++ ys = ys
@@ -1371,7 +1371,7 @@ infixr 5  ++
 So we'll just steal that for our own list. We'll name the function <span
 class="fixed">.++</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 infixr 5  .++
 (.++) :: List a -> List a -> List a
 Empty .++ ys = ys
@@ -1380,7 +1380,7 @@ Empty .++ ys = ys
 
 And let's see if it works ...
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let a = 3 :-: 4 :-: 5 :-: Empty
 ghci> let b = 6 :-: 7 :-: Empty
 ghci> a .++ b
@@ -1427,7 +1427,7 @@ Here's what we're going to say: a tree is either an empty tree or it's
 an element that contains some value and two trees. Sounds like a perfect
 fit for an algebraic data type!
 
-``` {.haskell:hs name="code"}
+```haskell
 data Tree a = EmptyTree | Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
 ```
 
@@ -1453,7 +1453,7 @@ So, here are two functions. One is a utility function for making a
 singleton tree (a tree with just one node) and a function to insert an
 element into a tree.
 
-``` {.haskell:hs name="code"}
+```haskell
 singleton :: a -> Tree a
 singleton x = Node x EmptyTree EmptyTree
 
@@ -1491,7 +1491,7 @@ root node. So if the element we're looking for is smaller than the root
 node, check to see if it's in the left sub-tree. If it's bigger, check
 to see if it's in the right sub-tree.
 
-``` {.haskell:hs name="code"}
+```haskell
 treeElem :: (Ord a) => a -> Tree a -> Bool
 treeElem x EmptyTree = False
 treeElem x (Node a left right)
@@ -1508,7 +1508,7 @@ some sort of value can be implemented with a fold! We're going to start
 with the empty tree and then approach a list from the right and just
 insert element after element into our accumulator tree.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let nums = [8,6,4,1,7,3,5]
 ghci> let numsTree = foldr treeInsert EmptyTree nums
 ghci> numsTree
@@ -1526,7 +1526,7 @@ try, we can make out its structure. We see that the root node is 5 and
 then it has two sub-trees, one of which has the root node of 3 and the
 other a 7, etc.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 8 `treeElem` numsTree
 True
 ghci> 100 `treeElem` numsTree
@@ -1578,7 +1578,7 @@ makes sense for <span class="fixed">Car</span> to be an instance of
 This is how the <span class="fixed">Eq</span> class is defined in the
 standard prelude:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Eq a where
     (==) :: a -> a -> Bool
     (/=) :: a -> a -> Bool
@@ -1629,7 +1629,7 @@ So once we have a class, what can we do with it? Well, not much, really.
 But once we start making types instances of that class, we start getting
 some nice functionality. So check out this type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data TrafficLight = Red | Yellow | Green
 ```
 
@@ -1639,7 +1639,7 @@ instances by hand, even though we could derive them for types like <span
 class="fixed">Eq</span> and <span class="fixed">Show</span>. Here's how
 we make it an instance of <span class="fixed">Eq</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Eq TrafficLight where
     Red == Red = True
     Green == Green = True
@@ -1667,7 +1667,7 @@ the class advertises. To fulfill the minimal complete definition for
 class="fixed">==</span> or <span class="fixed">/=</span>. If <span
 class="fixed">Eq</span> was defined simply like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Eq a where
     (==) :: a -> a -> Bool
     (/=) :: a -> a -> Bool
@@ -1690,7 +1690,7 @@ class="fixed">Show</span>, we just have to implement its <span
 class="fixed">show</span> function, which takes a value and turns it
 into a string.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Show TrafficLight where
     show Red = "Red light"
     show Yellow = "Yellow light"
@@ -1700,7 +1700,7 @@ instance Show TrafficLight where
 Once again, we used pattern matching to achieve our goals. Let's see how
 it works in action:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Red == Red
 True
 ghci> Red == Yellow
@@ -1722,7 +1722,7 @@ You can also make typeclasses that are subclasses of other typeclasses.
 The *class* declaration for <span class="fixed">Num</span> is a bit
 long, but here's the first part:
 
-``` {.haskell:hs name="code"}
+```haskell
 class (Eq a) => Num a where
    ...  
 ```
@@ -1751,7 +1751,7 @@ class="fixed">Char</span> or something) to produce a concrete type (like
 <span class="fixed">Maybe Char</span>). Let's take a look at the <span
 class="fixed">Eq</span> typeclass again:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Eq a where
     (==) :: a -> a -> Bool
     (/=) :: a -> a -> Bool
@@ -1766,7 +1766,7 @@ class="fixed">a -\> Maybe</span> but you can have a function of <span
 class="fixed">a -\> Maybe a</span> or <span class="fixed">Maybe Int -\>
 Maybe String</span>). That's why we can't do something like
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Eq Maybe where
     ...  
 ```
@@ -1779,7 +1779,7 @@ class="fixed">instance Eq (Maybe Int) where</span>, <span
 class="fixed">instance Eq (Maybe Char) where</span>, etc. for every type
 ever. So we could write it out like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Eq (Maybe m) where
     Just x == Just y = x == y
     Nothing == Nothing = True
@@ -1808,7 +1808,7 @@ class="fixed">Maybe</span> contains can be used with <span
 class="fixed">Eq</span>! That's why we have to modify our *instance*
 declaration like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance (Eq m) => Eq (Maybe m) where
     Just x == Just y = x == y
     Nothing == Nothing = True
@@ -1883,7 +1883,7 @@ semantics works better in Haskell, let's try and implement that
 JavaScript-ish behavior anyway. For fun! Let's start out with a *class*
 declaration.
 
-``` {.haskell:hs name="code"}
+```haskell
 class YesNo a where
     yesno :: a -> Bool
 ```
@@ -1899,7 +1899,7 @@ Next up, let's define some instances. For numbers, we'll assume that
 (like in JavaScript) any number that isn't 0 is true-ish and 0 is
 false-ish.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo Int where
     yesno 0 = False
     yesno _ = True
@@ -1908,7 +1908,7 @@ instance YesNo Int where
 Empty lists (and by extensions, strings) are a no-ish value, while
 non-empty lists are a yes-ish value.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo [a] where
     yesno [] = False
     yesno _ = True
@@ -1920,7 +1920,7 @@ assumptions about the type that's contained in the list. What else, hmm
 ... I know, <span class="fixed">Bool</span> itself also holds true-ness
 and false-ness and it's pretty obvious which is which.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo Bool where
     yesno = id
 ```
@@ -1931,7 +1931,7 @@ what we would be writing here anyway.
 
 Let's make <span class="fixed">Maybe a</span> an instance too.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo (Maybe a) where
     yesno (Just _) = True
     yesno Nothing = False
@@ -1954,7 +1954,7 @@ Previously, we defined a <span class="fixed">Tree a</span> type, that
 represented a binary search tree. We can say an empty tree is false-ish
 and anything that's not an empty tree is true-ish.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo (Tree a) where
     yesno EmptyTree = False
     yesno _ = True
@@ -1964,7 +1964,7 @@ Can a traffic light be a yes or no value? Sure. If it's red, you stop.
 If it's green, you go. If it's yellow? Eh, I usually run the yellows
 because I live for adrenaline.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance YesNo TrafficLight where
     yesno Red = False
     yesno _ = True
@@ -1972,7 +1972,7 @@ instance YesNo TrafficLight where
 
 Cool, now that we have some instances, let's go play!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> yesno $ length []
 False
 ghci> yesno "haha"
@@ -1996,7 +1996,7 @@ yesno :: (YesNo a) => a -> Bool
 Right, it works! Let's make a function that mimics the if statement, but
 it works with <span class="fixed">YesNo</span> values.
 
-``` {.haskell:hs name="code"}
+```haskell
 yesnoIf :: (YesNo y) => y -> a -> a -> a
 yesnoIf yesnoVal yesResult noResult = if yesno yesnoVal then yesResult else noResult
 ```
@@ -2005,7 +2005,7 @@ Pretty straightforward. It takes a yes-no-ish value and two things. If
 the yes-no-ish value is more of a yes, it returns the first of the two
 things, otherwise it returns the second of them.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> yesnoIf [] "YEAH!" "NO!"
 "NO!"
 ghci> yesnoIf [2,3,4] "YEAH!" "NO!"
@@ -2038,7 +2038,7 @@ class="fixed">Functor</span> typeclass.
 What better way to get to know the <span class="fixed">Functor</span>
 typeclass than to see how it's implemented? Let's take a peek.
 
-``` {.haskell:hs name="code"}
+```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
@@ -2075,7 +2075,7 @@ just a <span class="fixed">fmap</span> that works only on lists. Here's
 how the list is an instance of the <span class="fixed">Functor</span>
 typeclass.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor [] where
     fmap = map
 ```
@@ -2094,7 +2094,7 @@ Since for lists, <span class="fixed">fmap</span> is just <span
 class="fixed">map</span>, we get the same results when using them on
 lists.
 
-``` {.haskell:hs name="code"}
+```haskell
 map :: (a -> b) -> [a] -> [b]
 ghci> fmap (*2) [1..3]
 [2,4,6]
@@ -2119,7 +2119,7 @@ class="fixed">"HAHA"</span>, in which case it has a value of <span
 class="fixed">Just "HAHA"</span>. Here's how <span
 class="fixed">Maybe</span> is a functor.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor Maybe where
     fmap f (Just x) = Just (f x)
     fmap f Nothing = Nothing
@@ -2149,7 +2149,7 @@ but rather a single value packed up in a <span
 class="fixed">Just</span>, then we apply the function on the contents of
 the <span class="fixed">Just</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (++ " HEY GUYS IM INSIDE THE JUST") (Just "Something serious.")
 Just "Something serious. HEY GUYS IM INSIDE THE JUST"
 ghci> fmap (++ " HEY GUYS IM INSIDE THE JUST") Nothing
@@ -2173,13 +2173,13 @@ tree. Mapping over a non-empty tree will be a tree consisting of our
 function applied to the root value and its left and right sub-trees will
 be the previous sub-trees, only our function will be mapped over them.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor Tree where
     fmap f EmptyTree = EmptyTree
     fmap f (Node x leftsub rightsub) = Node (f x) (fmap f leftsub) (fmap f rightsub)
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (*2) EmptyTree
 EmptyTree
 ghci> fmap (*4) (foldr treeInsert EmptyTree [5,7,3,2,1,7])
@@ -2194,7 +2194,7 @@ apply <span class="fixed">Either</span> by feeding it only one parameter
 so that it has one free parameter. Here's how <span class="fixed">Either
 a</span> is a functor in the standard libraries:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor (Either a) where
     fmap f (Right x) = Right (f x)
     fmap f (Left x) = Left x
@@ -2215,7 +2215,7 @@ case of a <span class="fixed">Left</span>. Why is that? Well, if we look
 back at how the <span class="fixed">Either a b</span> type is defined,
 it's kind of like:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Either a b = Left a | Right b
 ```
 
@@ -2308,7 +2308,7 @@ concept.
 What are kinds and what are they good for? Well, let's examine the kind
 of a type by using the <span class="fixed">:k</span> command in GHCI.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Int
 Int :: *
 ```
@@ -2322,7 +2322,7 @@ concrete types. If I had to read <span class="fixed">\*</span> out loud
 Okay, now let's see what the kind of <span class="fixed">Maybe</span>
 is.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Maybe
 Maybe :: * -> *
 ```
@@ -2337,7 +2337,7 @@ means that the type constructor takes one concrete type and returns a
 concrete type. Let's apply the type parameter to <span
 class="fixed">Maybe</span> and see what the kind of that type is.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Maybe Int
 Maybe Int :: *
 ```
@@ -2360,7 +2360,7 @@ labels of types and there are parallels between the two.
 
 Let's look at another kind.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Either
 Either :: * -> * -> *
 ```
@@ -2371,7 +2371,7 @@ looks kind of like a type declaration of a function that takes two
 values and returns something. Type constructors are curried (just like
 functions), so we can partially apply them.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Either String
 Either String :: * -> *
 ghci> :k Either String Int
@@ -2389,7 +2389,7 @@ class="fixed">\* -\> \*</span> instead of its original kind <span
 class="fixed">\* -\> \* -\> \*</span>. If we look at the definition of
 <span class="fixed">Functor</span> again
 
-``` {.haskell:hs name="code"}
+```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
@@ -2404,7 +2404,7 @@ class="fixed">\* -\> \*</span>.
 Now, let's do some type-foo. Take a look at this typeclass that I'm just
 going to make up right now:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Tofu t where
     tofu :: j a -> t a j
 ```
@@ -2430,7 +2430,7 @@ class="fixed">a</span>), a type constructor that takes one concrete type
 OK, so let's make a type with a kind of <span class="fixed">\* -\>
 (\* -\> \*) -\> \*</span>. Here's one way of going about it.
 
-``` {.haskell:hs name="code"}
+```haskell
 data Frank a b  = Frank {frankField :: b a} deriving (Show)
 ```
 
@@ -2450,7 +2450,7 @@ class="fixed">\*</span> represents <span class="fixed">a</span> and the
 class="fixed">b</span>. Let's make some <span class="fixed">Frank</span>
 values and check out their types.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t Frank {frankField = Just "HAHA"}
 Frank {frankField = Just "HAHA"} :: Frank [Char] Maybe
 ghci> :t Frank {frankField = Node 'a' EmptyTree EmptyTree}
@@ -2484,12 +2484,12 @@ and returns a <span class="fixed">t a j</span>. So if we replace <span
 class="fixed">Frank</span> with <span class="fixed">j</span>, the result
 type would be <span class="fixed">Frank Int Maybe</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Tofu Frank where
     tofu x = Frank x
 ```
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> tofu (Just 'a') :: Frank Char Maybe
 Frank {frankField = Just 'a'}
 ghci> tofu ["HELLO"] :: Frank [Char] []
@@ -2499,7 +2499,7 @@ Frank {frankField = ["HELLO"]}
 Not very useful, but we did flex our type muscles. Let's do some more
 type-foo. We have this data type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Barry t k p = Barry { yabba :: p, dabba :: t k }
 ```
 
@@ -2519,7 +2519,7 @@ the *somethings* that we used as placeholders and we see it has a kind
 of <span class="fixed">(\* -\> \*) -\> \* -\> \* -\> \*</span>. Let's
 check that with GHCI.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :k Barry
 Barry :: (* -> *) -> * -> * -> *
 ```
@@ -2538,7 +2538,7 @@ class="fixed">Barry c d</span>. The third type parameter from <span
 class="fixed">Barry</span> will have to change and we see that it's
 conviniently in its own field.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor (Barry a b) where
     fmap f (Barry {yabba = x, dabba = y}) = Barry {yabba = f x, dabba = y}
 ```

@@ -110,7 +110,7 @@ class="fixed">Functor</span>. When we <span class="fixed">fmap</span> a
 function over an I/O action, we want to get back an I/O action that does
 the same thing, but has our function applied over its result value.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor IO where
     fmap f action = do
         result <- action
@@ -134,7 +134,7 @@ I/O action.
 We can play around with it to gain some intuition. It's pretty simple
 really. Check out this piece of code:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do line <- getLine
           let line' = reverse line
           putStrLn $ "You said " ++ line' ++ " backwards!"
@@ -145,7 +145,7 @@ The user is prompted for a line and we give it back to the user, only
 reversed. Here's how to rewrite this by using <span
 class="fixed">fmap</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do line <- fmap reverse getLine
           putStrLn $ "You said " ++ line ++ " backwards!"
           putStrLn $ "Yes, you really said" ++ line ++ " backwards!"
@@ -186,7 +186,7 @@ want to apply multiple transformations to some data inside a functor,
 you can declare your own function at the top level, make a lambda
 function or ideally, use function composition:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Char
 import Data.List
 
@@ -242,14 +242,14 @@ variables.
 
 </div>
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor ((->) r) where
     fmap f g = (\x -> f (g x))
 ```
 
 If the syntax allowed for it, it could have been written as
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor (r ->) where
     fmap f g = (\x -> f (g x))
 ```
@@ -287,7 +287,7 @@ composition is about. If you look at how the instance is defined above,
 you'll see that it's just function composition. Another way to write
 this instance would be:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor ((->) r) where
     fmap = (.)
 ```
@@ -298,7 +298,7 @@ class="fixed">:m + Control.Monad.Instances</span>, since that's where
 the instance is defined and then try playing with mapping over
 functions.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t fmap (*3) (+100)
 fmap (*3) (+100) :: (Num a) => a -> a
 ghci> fmap (*3) (+100) 1
@@ -377,7 +377,7 @@ class="fixed">f a -\> f b</span>. This is called *lifting* a function.
 Let's play around with that idea by using GHCI's <span
 class="fixed">:t</span> command:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t fmap (*2)
 fmap (*2) :: (Num a, Functor f) => f a -> f a
 ghci> :t fmap (replicate 3)
@@ -420,7 +420,7 @@ class="fixed">Maybe a</span>, it'll apply <span class="fixed">replicate
 it's <span class="fixed">Nothing</span>, then it stays <span
 class="fixed">Nothing</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (replicate 3) [1,2,3,4]
 [[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
 ghci> fmap (replicate 3) (Just 4)
@@ -459,7 +459,7 @@ seems kind of trivial or obvious.
 
 Let's see if this law holds for a few values of functors.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap id (Just 3)
 Just 3
 ghci> id (Just 3)
@@ -478,7 +478,7 @@ If we look at the implementation of <span class="fixed">fmap</span> for,
 say, <span class="fixed">Maybe</span>, we can figure out why the first
 functor law holds.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor Maybe where
     fmap f (Just x) = Just (f x)
     fmap f Nothing = Nothing
@@ -557,7 +557,7 @@ an instance of the <span class="fixed">Functor</span> typeclass but not
 really being a functor, because it doesn't satisfy the laws. Let's say
 that we have a type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data CMaybe a = CNothing | CJust Int a deriving (Show)
 ```
 
@@ -572,7 +572,7 @@ will, of course, depend on the concrete type that we choose for <span
 class="fixed">CMaybe a</span>. Let's play with our new type to get some
 intuition for it.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> CNothing
 CNothing
 ghci> CJust 0 "haha"
@@ -593,7 +593,7 @@ class="fixed">Functor</span> so that everytime we use <span
 class="fixed">fmap</span>, the function gets applied to the second
 field, whereas the first field gets increased by 1.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor CMaybe where
     fmap f CNothing = CNothing
     fmap f (CJust counter x) = CJust (counter+1) (f x)
@@ -606,7 +606,7 @@ box (a <span class="fixed">CJust</span> value), we don't just apply the
 function to the contents, we also increase the counter by 1. Everything
 seems cool so far, we can even play with this a bit:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (++"ha") (CJust 0 "ho")
 CJust 1 "hoha"
 ghci> fmap (++"he") (fmap (++"ha") (CJust 0 "ho"))
@@ -618,7 +618,7 @@ CNothing
 Does this obey the functor laws? In order to see that something doesn't
 obey a law, it's enough to find just one counter-example.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap id (CJust 0 "haha")
 CJust 1 "haha"
 ghci> id (CJust 0 "haha")
@@ -733,7 +733,7 @@ class="fixed">Just</span>. Therefore, doing <span class="fixed">fmap
 3)</span> if we use sections. Interesting! We get a function wrapped in
 a <span class="fixed">Just</span>!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t fmap (++) (Just "hey")
 fmap (++) (Just "hey") :: Maybe ([Char] -> [Char])
 ghci> :t fmap compare (Just 'a')
@@ -761,7 +761,7 @@ them? Well for one, we can map functions that take these functions as
 parameters over them, because whatever is inside a functor will be given
 to the function that we're mapping over it as a parameter.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> let a = fmap (*) [1,2,3,4]
 ghci> :t a
 a :: [Integer -> Integer]
@@ -791,7 +791,7 @@ class="fixed">\<\*\></span>. It doesn't provide a default implementation
 for any of them, so we have to define them both if we want something to
 be an applicative functor. The class is defined like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 class (Functor f) => Applicative f where
     pure :: a -> f a
     (<*>) :: f (a -> b) -> f a -> f b
@@ -840,7 +840,7 @@ extract, maybe even *sequence*. We'll see why soon.
 Let's take a look at the <span class="fixed">Applicative</span> instance
 implementation for <span class="fixed">Maybe</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Applicative Maybe where
     pure = Just
     Nothing <*> _ = Nothing
@@ -885,7 +885,7 @@ class="fixed">Nothing</span> is the result.
 
 OK cool great. Let's give this a whirl.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Just (+3) <*> Just 9
 Just 12
 ghci> pure (+3) <*> Just 10
@@ -916,7 +916,7 @@ is a partially applied function. Applicative functors, on the other
 hand, allow you to operate on several functors with a single function.
 Check out this piece of code:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> pure (+) <*> Just 3 <*> Just 5
 Just 8
 ghci> pure (+) <*> Just 3 <*> Nothing
@@ -966,7 +966,7 @@ exports a function called <span class="fixed">\<\$\></span>, which is
 just <span class="fixed">fmap</span> as an infix operator. Here's how
 it's defined:
 
-``` {.haskell:hs name="code"}
+```haskell
 (<$>) :: (Functor f) => (a -> b) -> f a -> f b
 f <$> x = fmap f x
 ```
@@ -998,14 +998,14 @@ class="fixed">Just "volta"</span> and we want to join them into one
 <span class="fixed">String</span> inside a <span
 class="fixed">Maybe</span> functor. We do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (++) <$> Just "johntra" <*> Just "volta"
 Just "johntravolta"
 ```
 
 Before we see how this happens, compare the above line with this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (++) "johntra" "volta"
 "johntravolta"
 ```
@@ -1041,7 +1041,7 @@ class="fixed">[]</span>) are applicative functors. What a suprise!
 Here's how <span class="fixed">[]</span> is an instance of <span
 class="fixed">Applicative</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Applicative [] where
     pure x = [x]
     fs <*> xs = [f x | f <- fs, x <- xs]
@@ -1061,7 +1061,7 @@ class="fixed">pure</span> is implemented as <span
 class="fixed">Just</span> in the instance implementation for <span
 class="fixed">Maybe</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> pure "Hey" :: [String]
 ["Hey"]
 ghci> pure "Hey" :: Maybe String
@@ -1083,7 +1083,7 @@ value from the right list. The resulting list has every possible
 combination of applying a function from the left list to a value in the
 right one.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [(*0),(+100),(^2)] <*> [1,2,3]
 [0,0,0,101,102,103,1,4,9]
 ```
@@ -1094,7 +1094,7 @@ left list is applied to every function in the right one. If we have a
 list of functions that take two parameters, we can apply those functions
 between two lists.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [(+),(*)] <*> [1,2] <*> [3,4]
 [4,5,5,6,3,4,6,8]
 ```
@@ -1109,7 +1109,7 @@ produces the final result.
 
 Using the applicative style with lists is fun! Watch:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (++) <$> ["ha","heh","hmm"] <*> ["?","!","."]
 ["ha?","ha!","ha.","heh?","heh!","heh.","hmm?","hmm!","hmm."]
 ```
@@ -1134,7 +1134,7 @@ list comprehensions. In the second chapter, we wanted to see all the
 possible products of <span class="fixed">[2,5,10]</span> and <span
 class="fixed">[8,10,11]</span>, so we did this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [ x*y | x <- [2,5,10], y <- [8,10,11]]
 [16,20,22,40,50,55,80,100,110]
 ```
@@ -1143,7 +1143,7 @@ We're just drawing from two lists and applying a function between every
 combination of elements. This can be done in the applicative style as
 well:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (*) <$> [2,5,10] <*> [8,10,11]
 [16,20,22,40,50,55,80,100,110]
 ```
@@ -1153,7 +1153,7 @@ calling <span class="fixed">\*</span> between two non-deterministic
 computations. If we wanted all possible products of those two lists that
 are more than 50, we'd just do:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> filter (>50) $ (*) <$> [2,5,10] <*> [8,10,11]
 [55,80,100,110]
 ```
@@ -1169,7 +1169,7 @@ Another instance of <span class="fixed">Applicative</span> that we've
 already encountered is <span class="fixed">IO</span>. This is how the
 instance is implemented:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Applicative IO where
     pure = return
     a <*> b = do
@@ -1209,7 +1209,7 @@ extract a result from an I/O action, it has to be performed.
 
 Consider this:
 
-``` {.haskell:hs name="code"}
+```haskell
 myAction :: IO String
 myAction = do
     a <- getLine
@@ -1224,7 +1224,7 @@ class="fixed">return</span>, because we wanted our new glued I/O action
 to hold the result of <span class="fixed">a ++ b</span>. Another way of
 writing this would be to use the applicative style.
 
-``` {.haskell:hs name="code"}
+```haskell
 myAction :: IO String
 myAction = (++) <$> getLine <*> getLine
 ```
@@ -1249,7 +1249,7 @@ means that this expression is a completely normal I/O action like any
 other, which also holds a result value inside it, just like other I/O
 actions. That's why we can do stuff like:
 
-``` {.haskell:hs name="code"}
+```haskell
 main = do
     a <- (++) <$> getLine <*> getLine
     putStrLn $ "The two lines concatenated turn out to be: " ++ a
@@ -1274,7 +1274,7 @@ class="fixed">(-\>) r</span> is a functor.
 
 </div>
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Applicative ((->) r) where
     pure x = (\_ -> x)
     f <*> g = \x -> f x (g x)
@@ -1290,7 +1290,7 @@ type for <span class="fixed">pure</span>, but specialized for the <span
 class="fixed">(-\>) r</span> instance, it's <span class="fixed">pure ::
 a -\> (r -\> a)</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (pure 3) "blah"
 3
 ```
@@ -1298,7 +1298,7 @@ ghci> (pure 3) "blah"
 Because of currying, function application is left-associative, so we can
 omit the parentheses.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> pure 3 "blah"
 3
 ```
@@ -1307,7 +1307,7 @@ The instance implementation for <span class="fixed">\<\*\></span> is a
 bit cryptic, so it's best if we just take a look at how to use functions
 as applicative functors in the applicative style.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t (+) <$> (+3) <*> (*100)
 (+) <$> (+3) <*> (*100) :: (Num a) => a -> a
 ghci> (+) <$> (+3) <*> (*100) $ 5
@@ -1329,7 +1329,7 @@ class="fixed">500</span>. Then, <span class="fixed">+</span> gets called
 with <span class="fixed">8</span> and <span class="fixed">500</span>,
 resulting in <span class="fixed">508</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (\x y z -> [x,y,z]) <$> (+3) <*> (*2) <*> (/2) $ 5
 [8.0,10.0,2.5]
 ```
@@ -1392,7 +1392,7 @@ Because one type can't have two instances for the same typeclass, the
 constructor <span class="fixed">ZipList</span> that has just one field,
 and that field is a list. Here's the instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Applicative ZipList where
         pure x = ZipList (repeat x)
         ZipList fs <*> ZipList xs = ZipList (zipWith (\f x -> f x) fs xs)
@@ -1429,7 +1429,7 @@ class="fixed">Show</span> instance, so we have to use the <span
 class="label function">getZipList</span> function to extract a raw list
 out of a zip list.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getZipList $ (+) <$> ZipList [1,2,3] <*> ZipList [100,100,100]
 [101,102,103]
 ghci> getZipList $ (+) <$> ZipList [1,2,3] <*> ZipList [100,100..]
@@ -1465,7 +1465,7 @@ called <span class="label function">liftA2</span>, which has a type of
 <span class="fixed">liftA2 :: (Applicative f) =\> (a -\> b -\> c) -\> f
 a -\> f b -\> f c</span> . It's defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 liftA2 :: (Applicative f) => (a -> b -> c) -> f a -> f b -> f c
 liftA2 f a b = f <$> a <*> b
 ```
@@ -1489,7 +1489,7 @@ class="fixed">Just 3</span> and <span class="fixed">Just 4</span>. Let's
 assume that the second one has a singleton list inside it, because
 that's really easy to achieve:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> fmap (\x -> [x]) (Just 4)
 Just [4]
 ```
@@ -1498,7 +1498,7 @@ OK, so let's say we have <span class="fixed">Just 3</span> and <span
 class="fixed">Just [4]</span>. How do we get <span class="fixed">Just
 [3,4]</span>? Easy.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> liftA2 (:) (Just 3) (Just [4])
 Just [3,4]
 ghci> (:) <$> Just 3 <*> Just [4]
@@ -1516,7 +1516,7 @@ implementing a function that takes a list of applicatives and returns an
 applicative that has a list as its result value. We'll call it <span
 class="fixed">sequenceA</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 sequenceA :: (Applicative f) => [f a] -> f [a]
 sequenceA [] = pure []
 sequenceA (x:xs) = (:) <$> x <*> sequenceA xs
@@ -1549,7 +1549,7 @@ fold. Remember, pretty much any function where we go over a list element
 by element and accumulate a result along the way can be implemented with
 a fold.
 
-``` {.haskell:hs name="code"}
+```haskell
 sequenceA :: (Applicative f) => [f a] -> f [a]
 sequenceA = foldr (liftA2 (:)) (pure [])
 ```
@@ -1565,7 +1565,7 @@ the applicatives.
 
 Let's give our function a whirl on some applicatives.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> sequenceA [Just 3, Just 2, Just 1]
 Just [3,2,1]
 ghci> sequenceA [Just 3, Nothing, Just 1]
@@ -1615,7 +1615,7 @@ view the list of results. For instance, we have a number and we're
 wondering whether it satisfies all of the predicates in a list. One way
 to do that would be like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> map (\f -> f 7) [(>4),(<10),odd]
 [True,True,True]
 ghci> and $ map (\f -> f 7) [(>4),(<10),odd]
@@ -1627,7 +1627,7 @@ returns <span class="fixed">True</span> if they're all <span
 class="fixed">True</span>. Another way to achieve the same thing would
 be with <span class="fixed">sequenceA</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> sequenceA [(>4),(<10),odd] 7
 [True,True,True]
 ghci> and $ sequenceA [(>4),(<10),odd] 7
@@ -1654,7 +1654,7 @@ possible combinations of their elements. For illustration, here's the
 above done with <span class="fixed">sequenceA</span> and then done with
 a list comprehension:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> sequenceA [[1,2,3],[4,5,6]]
 [[1,4],[1,5],[1,6],[2,4],[2,5],[2,6],[3,4],[3,5],[3,6]]
 ghci> [[x,y] | x <- [1,2,3], y <- [4,5,6]]
@@ -1731,7 +1731,7 @@ actions have to be sequenced so that they're then performed one after
 the other when evaluation is forced. You can't get the result of an I/O
 action without performing it.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> sequenceA [getLine, getLine, getLine]
 heyh
 ho
@@ -1783,7 +1783,7 @@ its left parameter and apply it to every value in the list that is on
 the right, resulting in every possible combination of applying a
 function from the left list to a value in the right list.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [(+1),(*100),(*5)] <*> [1,2,3]
 [2,3,4,100,200,300,5,10,15]
 ```
@@ -1805,7 +1805,7 @@ lists as applicatives in the zipping manner, we just wrap them with the
 <span class="fixed">ZipList</span> constructor and then once we're done,
 unwrap them with <span class="fixed">getZipList</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getZipList $ ZipList [(+1),(*100),(*5)] <*> ZipList [1,2,3]
 [2,200,15]
 ```
@@ -1814,7 +1814,7 @@ So, what does this have to do with this *newtype* keyword? Well, think
 about how we might write the data declaration for our <span
 class="fixed">ZipList a</span> type. One way would be to do it like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 data ZipList a = ZipList [a]
 ```
 
@@ -1823,7 +1823,7 @@ has just one field that is a list of things. We might also want to use
 record syntax so that we automatically get a function that extracts a
 list from a <span class="fixed">ZipList</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 data ZipList a = ZipList { getZipList :: [a] }
 ```
 
@@ -1837,7 +1837,7 @@ want to just take one type and wrap it in something to present it as
 another type. In the actual libraries, <span class="fixed">ZipList
 a</span> is defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype ZipList a = ZipList { getZipList :: [a] }
 ```
 
@@ -1857,7 +1857,7 @@ constructor can only have one field. But with *data*, you can make data
 types that have several value constructors and each constructor can have
 zero or more fields:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Profession = Fighter | Archer | Accountant
 
 data Race = Human | Elf | Orc | Goblin
@@ -1877,13 +1877,13 @@ the type that we're wrapping has to be in that type class to begin with.
 It makes sense, because *newtype* just wraps an existing type. So now if
 we do the following, we can print and equate values of our new type:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype CharList = CharList { getCharList :: [Char] } deriving (Eq, Show)
 ```
 
 Let's give that a go:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> CharList "this will be shown!"
 CharList {getCharList = "this will be shown!"}
 ghci> CharList "benny" == CharList "benny"
@@ -1895,7 +1895,7 @@ False
 In this particular *newtype*, the value constructor has the following
 type:
 
-``` {.haskell:hs name="code"}
+```haskell
 CharList :: [Char] -> CharList
 ```
 
@@ -1907,7 +1907,7 @@ that really is the case. Conversely, the <span
 class="fixed">getCharList</span> function, which was generated for us
 because we used record syntax in our *newtype*, has this type:
 
-``` {.haskell:hs name="code"}
+```haskell
 getCharList :: CharList -> [Char]
 ```
 
@@ -1924,14 +1924,14 @@ easy to make <span class="fixed">Maybe</span> an instance of <span
 class="fixed">Functor</span>, because the <span
 class="fixed">Functor</span> type class is defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
 
 So we just start out with:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor Maybe where
 ```
 
@@ -1942,7 +1942,7 @@ class="fixed">Functor</span> type class and so if we look at <span
 class="fixed">fmap</span> like it only worked on <span
 class="fixed">Maybe</span>, it ends up behaving like:
 
-``` {.haskell:hs name="code"}
+```haskell
 fmap :: (a -> b) -> Maybe a -> Maybe b
 ```
 
@@ -1964,7 +1964,7 @@ class="fixed">a</span> ends up being the one that changes when we use
 our tuple in such a way that the second type parameter represents the
 type of the first component in the tuple:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype Pair b a = Pair { getPair :: (a,b) }
 ```
 
@@ -1972,7 +1972,7 @@ And now, we can make it an instance of <span
 class="fixed">Functor</span> so that the function is mapped over the
 first component:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Functor (Pair c) where
     fmap f (Pair (x,y)) = Pair (f x, y)
 ```
@@ -1985,7 +1985,7 @@ convert the tuple back to our <span class="fixed">Pair b a</span>. If we
 imagine what the type <span class="fixed">fmap</span> would be if it
 only worked on our new pairs, it would be:
 
-``` {.haskell:hs name="code"}
+```haskell
 fmap :: (a -> b) -> Pair c a -> Pair c b
 ```
 
@@ -1994,7 +1994,7 @@ where</span> and so <span class="fixed">Pair c</span> took the place of
 the <span class="fixed">f</span> in the type class definition for <span
 class="fixed">Functor</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Functor f where
     fmap :: (a -> b) -> f a -> f b
 ```
@@ -2003,7 +2003,7 @@ So now, if we convert a tuple into a <span class="fixed">Pair b
 a</span>, we can use <span class="fixed">fmap</span> over it and the
 function will be mapped over the first component:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getPair $ fmap (*100) (Pair (2,3))
 (200,3)
 ghci> getPair $ fmap reverse (Pair ("london calling", 3))
@@ -2029,7 +2029,7 @@ erronous computation. If we try to evaluate it (that is, force Haskell
 to actually compute it) by printing it to the terminal, Haskell will
 throw a hissy fit (technically referred to as an exception):
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> undefined
 *** Exception: Prelude.undefined
 ```
@@ -2041,14 +2041,14 @@ will go smoothly because Haskell doesn't really need to evaluate any
 other elements in a list if we only want to see what the first element
 is:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> head [3,4,5,undefined,2,undefined]
 3
 ```
 
 Now consider the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 data CoolBool = CoolBool { getCoolBool :: Bool }
 ```
 
@@ -2060,7 +2060,7 @@ value <span class="fixed">"hello"</span> regardless of whether the <span
 class="fixed">Bool</span> inside the <span class="fixed">CoolBool</span>
 was <span class="fixed">True</span> or <span class="fixed">False</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 helloMe :: CoolBool -> String
 helloMe (CoolBool _) = "hello"
 ```
@@ -2069,7 +2069,7 @@ Instead of applying this function to a normal <span
 class="fixed">CoolBool</span>, let's throw it a curveball and apply it
 to <span class="fixed">undefined</span>!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> helloMe undefined
 "*** Exception: Prelude.undefined
 ```
@@ -2087,7 +2087,7 @@ thrown.
 Instead of using the *data* keyword for <span
 class="fixed">CoolBool</span>, let's try using *newtype*:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype CoolBool = CoolBool { getCoolBool :: Bool }
 ```
 
@@ -2097,7 +2097,7 @@ because the pattern matching syntax is the same if you use *newtype* or
 class="fixed">helloMe</span> to an <span class="fixed">undefined</span>
 value:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> helloMe undefined
 "hello"
 ```
@@ -2134,7 +2134,7 @@ The *type* keyword is for making type synonyms. What that means is that
 we just give another name to an already existing type so that the type
 is easier to refer to. Say we did the following:
 
-``` {.haskell:hs name="code"}
+```haskell
 type IntList = [Int]
 ```
 
@@ -2146,7 +2146,7 @@ Because <span class="fixed">[Int]</span> and <span
 class="fixed">IntList</span> are only two ways to refer to the same
 type, it doesn't matter which name we use in our type annotations:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> ([1,2,3] :: IntList) ++ ([1,2,3] :: [Int])
 [1,2,3,1,2,3]
 ```
@@ -2165,7 +2165,7 @@ type classes. When we use *newtype* to wrap an existing type, the type
 that we get is separate from the original type. If we make the following
 *newtype*:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype CharList = CharList { getCharList :: [Char] }
 ```
 
@@ -2238,7 +2238,7 @@ doesn't change the other one when used with <span
 class="fixed">++</span>. That value is the empty list: <span
 class="fixed">[]</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 4 * 1
 4
 ghci> 1 * 9
@@ -2267,7 +2267,7 @@ class="fixed">(3 \* 4) \* 5</span> or <span class="fixed">3 \* (4 \*
 5)</span>. Either way, the result is <span class="fixed">60</span>. The
 same goes for <span class="fixed">++</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> (3 * 2) * (8 * 5)
 240
 ghci> 3 * (2 * (8 * 5))
@@ -2297,7 +2297,7 @@ the world of Haskell, which is why the <span class="fixed">Monoid</span>
 type class exists. It's for types which can act like monoids. Let's see
 how the type class is defined:
 
-``` {.haskell:hs name="code"}
+```haskell
 class Monoid m where
     mempty :: m
     mappend :: m -> m -> m
@@ -2385,7 +2385,7 @@ Yes, lists are monoids! Like we've seen, the <span
 class="fixed">++</span> function and the empty list <span
 class="fixed">[]</span> form a monoid. The instance is very simple:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid [a] where
     mempty = []
     mappend = (++)
@@ -2399,7 +2399,7 @@ class="fixed">Monoid</span> requires a concrete type for an instance.
 
 Giving this a test run, we encounter no surprises:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> [1,2,3] `mappend` [4,5,6]
 [1,2,3,4,5,6]
 ghci> ("one" `mappend` "two") `mappend` "tree"
@@ -2442,7 +2442,7 @@ don't require that <span class="fixed">a \`mappend\` b</span> be equal
 to <span class="fixed">b \`mappend\` a</span>. In the case of the list,
 they clearly aren't:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> "one" `mappend` "two"
 "onetwo"
 ghci> "two" `mappend` "one"
@@ -2463,7 +2463,7 @@ not the only way for numbers to be monoids. Another way is to have the
 binary function be <span class="fixed">+</span> and the identity value
 <span class="fixed">0</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 0 + 4
 4
 ghci> 5 + 0
@@ -2488,7 +2488,7 @@ this, namely <span class="fixed">Product</span> and <span
 class="fixed">Sum</span>. <span class="fixed">Product</span> is defined
 like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype Product a =  Product { getProduct :: a }
     deriving (Eq, Ord, Read, Show, Bounded)
 ```
@@ -2497,7 +2497,7 @@ Simple, just a *newtype* wrapper with one type parameter along with some
 derived instances. Its instance for <span class="fixed">Monoid</span>
 goes a little something like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Num a => Monoid (Product a) where
     mempty = Product 1
     Product x `mappend` Product y = Product (x * y)
@@ -2515,7 +2515,7 @@ are already an instance of <span class="fixed">Num</span>. To use <span
 class="fixed">Producta a</span> as a monoid, we have to do some
 *newtype* wrapping and unwrapping:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getProduct $ Product 3 `mappend` Product 9
 27
 ghci> getProduct $ Product 3 `mappend` mempty
@@ -2537,7 +2537,7 @@ this time can come in handy.
 class="fixed">Product</span> and the instance is similar as well. We use
 it in the same way:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getSum $ Sum 2 `mappend` Sum 9
 11
 ghci> getSum $ mempty `mappend` Sum 3
@@ -2563,14 +2563,14 @@ class="fixed">False</span> and <span class="fixed">True</span> when
 class="fixed">Any</span> *newtype* constructor is an instance of <span
 class="fixed">Monoid</span> in this fashion. It's defined like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype Any = Any { getAny :: Bool }
     deriving (Eq, Ord, Read, Show, Bounded)
 ```
 
 Its instance looks goes like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid Any where
         mempty = Any False
         Any x `mappend` Any y = Any (x || y)
@@ -2585,7 +2585,7 @@ class="fixed">Any</span> wrapped <span class="fixed">Bool</span>s are
 <span class="fixed">True</span> if any of them are <span
 class="fixed">True</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getAny $ Any True `mappend` Any False
 True
 ghci> getAny $ mempty `mappend` Any True
@@ -2604,14 +2604,14 @@ class="fixed">True</span> the identity value. Logical *and* will return
 class="fixed">True</span>. This is the *newtype* declaration, nothing
 fancy:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype All = All { getAll :: Bool }
         deriving (Eq, Ord, Read, Show, Bounded)
 ```
 
 And this is the instance:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid All where
         mempty = All True
         All x `mappend` All y = All (x && y)
@@ -2623,7 +2623,7 @@ class="fixed">True</span> only if *all* the values used in the <span
 class="fixed">mappend</span> operations are <span
 class="fixed">True</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getAll $ mempty `mappend` All True
 True
 ghci> getAll $ mempty `mappend` All False
@@ -2654,7 +2654,7 @@ class="fixed">LT</span>, <span class="fixed">EQ</span> and <span
 class="fixed">GT</span>, which stand for *less than*, *equal* and
 *greater than* respectively:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> 1 `compare` 2
 LT
 ghci> 2 `compare` 2
@@ -2671,7 +2671,7 @@ a monoid, but it turns out that its <span class="fixed">Monoid</span>
 instance is just as intuitive as the ones we've met so far and also
 quite useful:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid Ordering where
     mempty = EQ
     LT `mappend` _ = LT
@@ -2713,7 +2713,7 @@ will result in <span class="fixed">LT</span>, whereas <span
 class="fixed">GT \`mappend\` LT</span> will result in <span
 class="fixed">GT</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> LT `mappend` GT
 LT
 ghci> GT `mappend` LT
@@ -2731,7 +2731,7 @@ length, then instead of returning <span class="fixed">EQ</span> right
 away, we want to compare them alphabetically. One way to write this
 would be like so:
 
-``` {.haskell:hs name="code"}
+```haskell
 lengthCompare :: String -> String -> Ordering
 lengthCompare x y = let a = length x `compare` length y
                         b = x `compare` y
@@ -2747,7 +2747,7 @@ But by employing our understanding of how <span
 class="fixed">Ordering</span> is a monoid, we can rewrite this function
 in a much simpler manner:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Monoid
 
 lengthCompare :: String -> String -> Ordering
@@ -2757,7 +2757,7 @@ lengthCompare x y = (length x `compare` length y) `mappend`
 
 We can try this out:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> lengthCompare "zen" "ants"
 LT
 ghci> lengthCompare "zen" "ant"
@@ -2772,7 +2772,7 @@ parameter. If we wanted to expand this function to also compare for the
 number of vowels and set this to be the second most important criterion
 for comparison, we'd just modify it like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 import Data.Monoid
 
 lengthCompare :: String -> String -> Ordering
@@ -2787,7 +2787,7 @@ vowels it has by first filtering it only for letters that are in the
 string <span class="fixed">"aeiou"</span> and then applying <span
 class="fixed">length</span> to that.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> lengthCompare "zen" "anna"
 LT
 ghci> lengthCompare "zen" "ana"
@@ -2826,7 +2826,7 @@ values that we're <span class="fixed">mappend</span>ing is <span
 class="fixed">Nothing</span>, we keep the other value. Here's the
 instance declaration:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid a => Monoid (Maybe a) where
     mempty = Nothing
     Nothing `mappend` m = m
@@ -2847,7 +2847,7 @@ because the class constraint ensures that the type of what's inside the
 <span class="fixed">Just</span> is an instance of <span
 class="fixed">Monoid</span>.
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> Nothing `mappend` Just "andy"
 Just "andy"
 ghci> Just LT `mappend` Nothing
@@ -2873,7 +2873,7 @@ between them, so what are we to do? Well, one thing we can do is to just
 discard the second value and keep the first one. For this, the <span
 class="fixed">First a</span> type exists and this is its definition:
 
-``` {.haskell:hs name="code"}
+```haskell
 newtype First a = First { getFirst :: Maybe a }
     deriving (Eq, Ord, Read, Show)
 ```
@@ -2881,7 +2881,7 @@ newtype First a = First { getFirst :: Maybe a }
 We take a <span class="fixed">Maybe a</span> and we wrap it with a
 *newtype*. The <span class="fixed">Monoid</span> instance is as follows:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance Monoid (First a) where
     mempty = First Nothing
     First (Just x) `mappend` _ = First (Just x)
@@ -2897,7 +2897,7 @@ one is a <span class="fixed">Nothing</span>, then we present the second
 parameter as a result, regardless of whether it's a <span
 class="fixed">Just</span> or a <span class="fixed">Nothing</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getFirst $ First (Just 'a') `mappend` First (Just 'b')
 Just 'a'
 ghci> getFirst $ First Nothing `mappend` First (Just 'b')
@@ -2911,7 +2911,7 @@ class="fixed">Maybe</span> values and we just want to know if any of
 them is a <span class="fixed">Just</span>. The <span
 class="fixed">mconcat</span> function comes in handy:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getFirst . mconcat . map First $ [Nothing, Just 9, Just 10]
 Just 9
 ```
@@ -2926,7 +2926,7 @@ class="fixed">Nothing</span> value is kept when <span
 class="fixed">mappend</span>ing and using <span
 class="fixed">mconcat</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getLast . mconcat . map Last $ [Nothing, Just 9, Just 10]
 Just 10
 ghci> getLast $ Last (Just "one") `mappend` Last (Just "two")
@@ -2950,7 +2950,7 @@ class="fixed">Data.Foldable</span> and because it export functions whose
 names clash with the ones from the <span class="fixed">Prelude</span>,
 it's best imported qualified (and served with basil):
 
-``` {.haskell:hs name="code"}
+```haskell
 import qualified Foldable as F
 ```
 
@@ -2964,7 +2964,7 @@ compare the types of <span class="fixed">Foldable</span>'s <span
 class="fixed">foldr</span> and the <span class="fixed">foldr</span> from
 the <span class="fixed">Prelude</span> to see how they differ:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> :t foldr
 foldr :: (a -> b -> b) -> b -> [a] -> b
 ghci> :t F.foldr
@@ -2977,7 +2977,7 @@ class="fixed">Data.Foldable</span> accepts any type that can be folded
 up, not just lists! As expected, both <span class="fixed">foldr</span>
 functions do the same for lists:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> foldr (*) 1 [1,2,3]
 6
 ghci> F.foldr (*) 1 [1,2,3]
@@ -2987,7 +2987,7 @@ ghci> F.foldr (*) 1 [1,2,3]
 Okay then, what are some other data structures that support folds? Well,
 there's the <span class="fixed">Maybe</span> we all know and love!
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> F.foldl (+) 2 (Just 9)
 11
 ghci> F.foldr (||) False (Just True)
@@ -3004,7 +3004,7 @@ Remember the tree data structure from the [Making Our Own Types and
 Typeclasses](making-our-own-types-and-typeclasses#recursive-data-structures)
 chapter? We defined it like this:
 
-``` {.haskell:hs name="code"}
+```haskell
 data Tree a = Empty | Node a (Tree a) (Tree a) deriving (Show, Read, Eq)
 ```
 
@@ -3022,7 +3022,7 @@ function, which is also a part of the <span
 class="fixed">Foldable</span> type class. The <span
 class="fixed">foldMap</span> function has the following type:
 
-``` {.haskell:hs name="code"}
+```haskell
 foldMap :: (Monoid m, Foldable t) => (a -> m) -> t a -> m
 ```
 
@@ -3045,7 +3045,7 @@ type for free!
 This is how we make <span class="fixed">Tree</span> an instance of <span
 class="fixed">Foldable</span>:
 
-``` {.haskell:hs name="code"}
+```haskell
 instance F.Foldable Tree where
     foldMap f Empty = mempty
     foldMap f (Node x l r) = F.foldMap f l `mappend`
@@ -3090,7 +3090,7 @@ Now that we have a <span class="fixed">Foldable</span> instance for our
 tree type, we get <span class="fixed">foldr</span> and <span
 class="fixed">foldl</span> for free! Consider this tree:
 
-``` {.haskell:hs name="code"}
+```haskell
 testTree = Node 5
             (Node 3
                 (Node 1 Empty Empty)
@@ -3110,7 +3110,7 @@ class="fixed">8</span> to its left and a <span class="fixed">10</span>
 on the far right side. With a <span class="fixed">Foldable</span>
 instance, we can do all of the folds that we can do on lists:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> F.foldl (+) 0 testTree
 42
 ghci> F.foldl (*) 1 testTree
@@ -3123,7 +3123,7 @@ handy for reducing our structure to a single monoid value. For instance,
 if we want to know if any number in our tree is equal to <span
 class="fixed">3</span>, we can do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getAny $ F.foldMap (\x -> Any $ x == 3) testTree
 True
 ```
@@ -3135,7 +3135,7 @@ class="fixed">Bool</span> wrapped in <span class="fixed">Any</span>.
 element in our tree and then reduces the resulting monoids into a single
 monoid with <span class="fixed">mappend</span>. If we do this:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> getAny $ F.foldMap (\x -> Any $ x > 15) testTree
 False
 ```
@@ -3157,7 +3157,7 @@ class="fixed">mappend</span> action that takes place between all those
 singleton list results in a single list that holds all of the elements
 that are in our tree:
 
-``` {.haskell:hs name="code"}
+```haskell
 ghci> F.foldMap (\x -> [x]) testTree
 [1,3,6,5,8,9,10]
 ```
